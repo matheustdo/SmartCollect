@@ -15,9 +15,9 @@ public class ServerMain extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("view/ServerMain.fxml"));		
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/ServerMain.fxml"));		
 		Parent root = loader.load();		
-		ServerMainFxmlController serverFXMLController = loader.getController();
+		ServerMainFxmlController serverMainFxmlController = loader.getController();
 		
 		Scene scene = new Scene(root);		
 		
@@ -27,15 +27,8 @@ public class ServerMain extends Application {
 		primaryStage.setMinHeight(520);
 		primaryStage.show();
 		
-		Runnable UDPRunnableServer = new UDPServer(25565, "localhost");
-		Thread threadUDPServer =  new Thread(UDPRunnableServer);
-		threadUDPServer.start();
-		
 		primaryStage.setOnCloseRequest(event -> {
 			System.exit(0);
 			});
-		
-		serverFXMLController.updateInfo(((UDPServer)UDPRunnableServer).getServerSocket().getLocalAddress().getHostAddress(), 
-				((UDPServer)UDPRunnableServer).getServerSocket().getLocalPort(), 0, 0, 0);
 	}
 }
