@@ -1,7 +1,6 @@
 package view;
 
 import controller.DumpsterMainFxmlController;
-import controller.ServerFXMLController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,5 +24,9 @@ public class DumpsterMain extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
 		primaryStage.show();
+		
+		primaryStage.setOnCloseRequest(event -> {
+			dumpsterMainFxmController.shutdownSocket();
+			});
 	}	
 }

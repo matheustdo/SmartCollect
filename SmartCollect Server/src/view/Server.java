@@ -33,10 +33,8 @@ public class Server extends Application {
 		
 		primaryStage.setOnCloseRequest(event -> {
 			((UDPServer)UDPRunnableServer).getServerSocket().close();
-			System.out.println("SERVER STATUS: " + !((UDPServer)UDPRunnableServer).getServerSocket().isClosed());
 			});
 		
-		System.out.println("SERVER STATUS: " + !((UDPServer)UDPRunnableServer).getServerSocket().isClosed());
 		serverFXMLController.updateInfo(((UDPServer)UDPRunnableServer).getServerSocket().getLocalAddress().getHostAddress(), 
 				((UDPServer)UDPRunnableServer).getServerSocket().getLocalPort(), 0, 0, 0);
 	}

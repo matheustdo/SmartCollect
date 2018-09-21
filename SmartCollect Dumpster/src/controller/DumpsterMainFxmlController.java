@@ -104,4 +104,8 @@ public class DumpsterMainFxmlController implements Initializable {
 		turnOnButton.setDisable(true);		
 		quantitySlider.setDisable(false);
 	}
+	
+	public void shutdownSocket() {
+		dumpsterController.closeSocket();
+	}
 }

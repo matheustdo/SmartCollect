@@ -4,42 +4,26 @@ import java.io.Serializable;
 
 public class Dumpster implements Serializable {	
 	private static final long serialVersionUID = 5955008319878533125L;
+	
+	private int idNumber;
 	private double trashQuantity, maxCapacity;
 	private String address;	
 	private DumpsterType type;
 	
-	public Dumpster() { 
-		this.trashQuantity = 0;
-		this.maxCapacity = 500;
-		this.address = "";
-		this.type = DumpsterType.CAN;
-	}
-	
-	public Dumpster(double maxCapacity, String address, DumpsterType type) { 
+	public Dumpster(int idNumber, double maxCapacity, String address, DumpsterType type) { 
+		this.idNumber = idNumber;
 		this.trashQuantity = 0;
 		this.maxCapacity = maxCapacity;
 		this.address = address;
 		this.type = type;
 	}
 	
-	public void increaseTrash(double increasement) throws NoSpaceException {
-		if (trashQuantity + increasement <= maxCapacity) {
-			trashQuantity += increasement;
-		} else {
-			throw new NoSpaceException();
-		}
+	public void setTrashQuantity(double trashQuantity) {
+		this.trashQuantity = trashQuantity;
 	}
 	
-	public void setEmpty() {
-		this.trashQuantity = 0;
-	}
-	
-	public void setMaxCapacity(double maxCapacity) {
-		this.maxCapacity = maxCapacity;
-	}
-	
-	public double getTrashLevel() {
-		return (100*trashQuantity)/maxCapacity;
+	public int getIdNumber() {
+		return idNumber;		
 	}
 	
 	public double getTrashQuantity() {
