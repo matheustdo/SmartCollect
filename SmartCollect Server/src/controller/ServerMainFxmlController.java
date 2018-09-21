@@ -10,9 +10,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import view.Server;
+import view.ServerMain;
 
-public class ServerFXMLController implements Initializable {
+public class ServerMainFxmlController implements Initializable {
 	@FXML
     private Label ipNumberLabel;
 

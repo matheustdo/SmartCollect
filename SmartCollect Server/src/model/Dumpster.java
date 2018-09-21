@@ -7,14 +7,12 @@ public class Dumpster implements Serializable {
 	
 	private int idNumber;
 	private double trashQuantity, maxCapacity;
-	private String address;	
 	private DumpsterType type;
 	
-	public Dumpster(int idNumber, double maxCapacity, String address, DumpsterType type) { 
+	public Dumpster(int idNumber, double maxCapacity, DumpsterType type) { 
 		this.idNumber = idNumber;
 		this.trashQuantity = 0;
 		this.maxCapacity = maxCapacity;
-		this.address = address;
 		this.type = type;
 	}
 	
@@ -32,10 +30,6 @@ public class Dumpster implements Serializable {
 	
 	public double getMaxCapacity() {
 		return maxCapacity;
-	}
-	
-	public String getAddress() {
-		return address;
 	}
 	
 	public DumpsterType getType() {
