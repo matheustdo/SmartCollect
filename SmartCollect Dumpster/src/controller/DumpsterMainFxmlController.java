@@ -84,7 +84,7 @@ public class DumpsterMainFxmlController implements Initializable {
 	private void startServer() throws UnknownHostException, SocketException {
 		int port = Integer.parseInt(portTextField.getText());
 		String address = ipTextField.getText();
-		dumpsterController.turnServerOn(port, address);
+		dumpsterController.turnClientOn(port, address);
 		statusTextField.setText("ONLINE");
 		statusTextField.setTextFill(Color.DARKGREEN);
 	}

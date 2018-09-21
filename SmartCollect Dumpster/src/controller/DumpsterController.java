@@ -43,7 +43,7 @@ public class DumpsterController {
      * @throws UnknownHostException UnknownHostException exception
      * @throws SocketException SocketException exception
      */
-    public void turnServerOn(int serverPort, String serverIP) throws UnknownHostException, SocketException {
+    public void turnClientOn(int serverPort, String serverIP) throws UnknownHostException, SocketException {
     	udpRunnableClient = new UDPClient(serverPort, serverIP, dumpster);
 		Thread threadClient =  new Thread(udpRunnableClient);
 		threadClient.start();

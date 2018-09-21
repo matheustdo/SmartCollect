@@ -154,7 +154,7 @@
                   </GridPane>
                   <VBox alignment="CENTER" prefHeight="328.0" prefWidth="20.0">
                      <children>
-                        <Slider fx:id="quantitySlider" onMouseDragged="#onMouseDragged" orientation="VERTICAL" prefHeight="309.0" prefWidth="20.0" />
+                        <Slider fx:id="quantitySlider" onMouseDragged="#onMouseDragged" orientation="VERTICAL" prefHeight="319.0" prefWidth="20.0" />
                      </children>
                   </VBox>
                </children>
