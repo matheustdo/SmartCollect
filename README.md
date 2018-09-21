@@ -1,2 +1,2 @@
 # SmartCollect
-A little project to learn initial network concepts.
+A basic project to learn initial network concepts.
