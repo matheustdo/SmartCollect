@@ -41,9 +41,6 @@ public class DumpsterMainFxmlController implements Initializable {
     private TextField idTextField;
 
     @FXML
-    private TextField addressTextField;
-
-    @FXML
     private TextField capacityTextField;
 
     @FXML
@@ -52,9 +49,8 @@ public class DumpsterMainFxmlController implements Initializable {
     @FXML
     private Slider quantitySlider;
     
-    private final DecimalFormat decimalFormat = new DecimalFormat("0.#");
+    private final DecimalFormat decimalFormat = new DecimalFormat("0");
     private DumpsterController dumpsterController = new DumpsterController();
-    
     
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -81,9 +77,8 @@ public class DumpsterMainFxmlController implements Initializable {
 	private void createDumpster() {
 		int id = Integer.parseInt(idTextField.getText());
 		double capacity = Double.parseDouble(capacityTextField.getText());
-		String address = addressTextField.getText();
 		String type = typeChoicer.getSelectionModel().selectedItemProperty().getValue();
-		dumpsterController.createDumpster(id, capacity, address, type);
+		dumpsterController.createDumpster(id, capacity, type);
 	}
 	
 	private void startServer() throws UnknownHostException, SocketException {
@@ -99,13 +94,8 @@ public class DumpsterMainFxmlController implements Initializable {
 		portTextField.setDisable(true);
 		typeChoicer.setDisable(true);
 		idTextField.setDisable(true);
-		addressTextField.setDisable(true);
 		capacityTextField.setDisable(true);
 		turnOnButton.setDisable(true);		
 		quantitySlider.setDisable(false);
-	}
-	
-	public void shutdownSocket() {
-		dumpsterController.closeSocket();
 	}
 }

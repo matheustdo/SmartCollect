@@ -32,7 +32,7 @@ public class Server extends Application {
 		threadUDPServer.start();
 		
 		primaryStage.setOnCloseRequest(event -> {
-			((UDPServer)UDPRunnableServer).getServerSocket().close();
+			System.exit(0);
 			});
 		
 		serverFXMLController.updateInfo(((UDPServer)UDPRunnableServer).getServerSocket().getLocalAddress().getHostAddress(), 

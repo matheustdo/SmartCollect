@@ -35,10 +35,8 @@ public class UDPClient implements Runnable {
                 DatagramPacket datagramPacket = new DatagramPacket(objData, objData.length, serverIP, serverPort);
                 socket.send(datagramPacket);
             }
-		} catch (IOException e) {	}
-	}
-	
-	public DatagramSocket getSocket() {
-		return socket;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

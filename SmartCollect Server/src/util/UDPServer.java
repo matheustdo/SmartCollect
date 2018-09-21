@@ -34,7 +34,9 @@ public class UDPServer implements Runnable {
 				System.out.println("Trash Quantity: " + dumpster.getTrashQuantity());				
 				System.out.println("Address: " + dumpster.getAddress());
 				System.out.println("# # # # #");
-			} catch (IOException | ClassNotFoundException e) {	}
+			} catch (IOException | ClassNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

@@ -18,11 +18,11 @@ public class DumpsterController {
      * @param address Dumpster street address
      * @param type Dumpster type
      */
-    public void createDumpster(int idNumber, double maxCapacity, String address, String type) {
+    public void createDumpster(int idNumber, double maxCapacity, String type) {
     	if(type.equals("Trash can")) {
-    		dumpster = new Dumpster(idNumber, maxCapacity, address, DumpsterType.CAN);
+    		dumpster = new Dumpster(idNumber, maxCapacity, DumpsterType.CAN);
     	} else {
-    		dumpster = new Dumpster(idNumber, maxCapacity, address, DumpsterType.STATION);
+    		dumpster = new Dumpster(idNumber, maxCapacity, DumpsterType.STATION);
     	}
     }
     
@@ -48,11 +48,4 @@ public class DumpsterController {
 		Thread threadClient =  new Thread(udpRunnableClient);
 		threadClient.start();
 	}
-    
-    /**
-     * Close server
-     */
-    public void closeSocket() {
-    	((UDPClient)udpRunnableClient).getSocket().close();
-    }
 }

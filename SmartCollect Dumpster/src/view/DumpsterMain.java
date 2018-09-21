@@ -18,7 +18,7 @@ public class DumpsterMain extends Application {
 		Parent root = loader.load();		
 		DumpsterMainFxmlController dumpsterMainFxmController = loader.getController();
 		
-		Scene scene = new Scene(root, 297, 370);
+		Scene scene = new Scene(root, 297, 350);
 		
 		primaryStage.setTitle("SmartColect Dumpster");
 		primaryStage.setScene(scene);
@@ -26,7 +26,7 @@ public class DumpsterMain extends Application {
 		primaryStage.show();
 		
 		primaryStage.setOnCloseRequest(event -> {
-			dumpsterMainFxmController.shutdownSocket();
+			System.exit(0);
 			});
 	}	
 }
