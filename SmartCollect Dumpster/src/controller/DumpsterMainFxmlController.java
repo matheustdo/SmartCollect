@@ -13,140 +13,95 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import model.Dumpster;
-import model.DumpsterType;
-import model.NoSpaceException;
-import util.UDPClient;
 
 public class DumpsterMainFxmlController implements Initializable {
 	@FXML
     private Label levelLabel;
 
     @FXML
-    private TextField serverIPTextField;
+    private Label quantityLabel;
 
     @FXML
-    private TextField serverPortTextField;
+    private Label statusTextField;
+
+    @FXML
+    private TextField ipTextField;
+
+    @FXML
+    private TextField portTextField;
 
     @FXML
     private ChoiceBox<String> typeChoicer;
 
     @FXML
-    private TextField streetAddressTextField;
+    private TextField idTextField;
+
+    @FXML
+    private TextField addressTextField;
 
     @FXML
     private TextField capacityTextField;
 
     @FXML
-    private TextField incrementTextField;
-
-    @FXML
-    private Button increaseTrashButton;
-
-    @FXML
     private Button turnOnButton;
 
     @FXML
-    private Button emptyItButton;
+    private Slider quantitySlider;
     
-    @FXML
-    private Label serverStatusTextField;
-    
-    private Dumpster dumpster;
-    private String serverIP;
-    private int serverPort;
-    private boolean serverStatus;
     private final DecimalFormat decimalFormat = new DecimalFormat("0.#");
+    private DumpsterController dumpsterController = new DumpsterController();
+    
     
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		serverStatus = false;
-		incrementTextField.setDisable(true);
-		increaseTrashButton.setDisable(true);
-		emptyItButton.setDisable(true);
-		serverStatusTextField.setTextFill(Color.RED);
-		
+		quantitySlider.setDisable(true);
+		statusTextField.setTextFill(Color.DARKRED);		
 		typeChoicer.setItems(FXCollections.observableArrayList("Trash can", "Transfer station"));
 		typeChoicer.getSelectionModel().selectFirst();
-		
-		levelLabel.setText(0 + "%");
 	}
 	
 	@FXML
-    void turnOnAction(ActionEvent event) {
-		if(serverStatus == false) {
-			serverIP = serverIPTextField.getText();
-			try {			
-				serverPort = Integer.parseInt(serverPortTextField.getText());
-				if(typeChoicer.getSelectionModel().selectedItemProperty().getValue().equals("Trash can")) {
-					try {
-					dumpster = new Dumpster(Double.parseDouble(capacityTextField.getText()), 
-							streetAddressTextField.getText(), DumpsterType.CAN);
-					turnServerOn();
-					} catch (Exception e) {
-						capacityTextField.setText("Insert a correct value");
-					}
-				} else {
-					try {
-					dumpster = new Dumpster(Double.parseDouble(capacityTextField.getText()), 
-							streetAddressTextField.getText(), DumpsterType.STATION);
-					turnServerOn();
-					} catch (Exception e) { 
-						capacityTextField.setText("Insert a correct value");
-					}
-				}
-			} catch (Exception e) {
-				serverPortTextField.setText("Insert a correct value");
-			}
-		} else {
-			try {
-				dumpster.setMaxCapacity(Double.parseDouble(capacityTextField.getText()));
-			} catch (Exception e) {
-				capacityTextField.setText("Insert a correct value");
-			}
-		}
-    }
-	
-	private void turnServerOn() {
-		Runnable runnableClient;
-		try {
-			runnableClient = new UDPClient(serverPort, serverIP, dumpster);
-			Thread threadClient =  new Thread(runnableClient);
-			threadClient.start();
-			
-			levelLabel.setText(decimalFormat.format(dumpster.getTrashLevel()) + "%");
-			serverIPTextField.setDisable(true);
-			serverPortTextField.setDisable(true);
-			typeChoicer.setDisable(true);
-			turnOnButton.setText("Update dumpster");
-			serverStatus = true;
-			serverStatusTextField.setText("SENDING DATA");
-			serverStatusTextField.setTextFill(Color.GREEN);
-			incrementTextField.setDisable(false);
-			increaseTrashButton.setDisable(false);
-			emptyItButton.setDisable(false);
-		} catch (UnknownHostException e) {
-			serverIPTextField.setText("Insert a correct IP");
-		} catch (SocketException e) {
-			e.printStackTrace();
-		}
+	void onMouseDragged(MouseEvent event) {
+		levelLabel.setText(decimalFormat.format(quantitySlider.getValue()) + "%");
+		quantityLabel.setText(decimalFormat.format(dumpsterController.updateTrashQuantity(quantitySlider.getValue())) + "/" + capacityTextField.getText() + " l");
 	}
 	
 	@FXML
-    void emptyOnAction(ActionEvent event) {
-		dumpster.setEmpty();
+    void turnOnAction(ActionEvent event) throws UnknownHostException, SocketException {
+		createDumpster();
+		startServer();
+		toggleElements();
+		quantityLabel.setText("0" + "/" + capacityTextField.getText() + " l");
     }
-
-    @FXML
-    void increaseOnAction(ActionEvent event) {
-    	try {
-    		dumpster.increaseTrash(Double.parseDouble(incrementTextField.getText()));
-    	} catch (Exception e) {
-    		incrementTextField.setText("Insert a correct value");
-    	} catch (NoSpaceException e) {
-    		incrementTextField.setText("No space to it");
-		}
-    }
+	
+	private void createDumpster() {
+		int id = Integer.parseInt(idTextField.getText());
+		double capacity = Double.parseDouble(capacityTextField.getText());
+		String address = addressTextField.getText();
+		String type = typeChoicer.getSelectionModel().selectedItemProperty().getValue();
+		dumpsterController.createDumpster(id, capacity, address, type);
+	}
+	
+	private void startServer() throws UnknownHostException, SocketException {
+		int port = Integer.parseInt(portTextField.getText());
+		String address = ipTextField.getText();
+		dumpsterController.turnServerOn(port, address);
+		statusTextField.setText("ONLINE");
+		statusTextField.setTextFill(Color.DARKGREEN);
+	}
+	
+	private void toggleElements() {
+		ipTextField.setDisable(true);
+		portTextField.setDisable(true);
+		typeChoicer.setDisable(true);
+		idTextField.setDisable(true);
+		addressTextField.setDisable(true);
+		capacityTextField.setDisable(true);
+		turnOnButton.setDisable(true);		
+		quantitySlider.setDisable(false);
+	}
 }
