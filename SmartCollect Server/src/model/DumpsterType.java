@@ -1,5 +1,7 @@
 package model;
 
-public enum DumpsterType {
+import java.io.Serializable;
+
+public enum DumpsterType implements Serializable {
 	CAN, STATION
 }

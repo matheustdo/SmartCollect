@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minWidth="149.0" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ServerMainFxmlController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minWidth="149.0" prefHeight="480.0" prefWidth="779.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ServerMainFxmlController">
    <children>
       <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
          <children>
@@ -48,13 +48,20 @@
                   </AnchorPane>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                      <children>
-                        <TitledPane animated="false" collapsible="false" layoutX="16.0" layoutY="18.0" prefHeight="200.0" prefWidth="200.0" text="Connections List" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0">
+                        <TitledPane animated="false" collapsible="false" layoutX="16.0" layoutY="18.0" prefHeight="200.0" prefWidth="284.0" text="Dumpsters Connections List" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0">
                            <content>
-                              <ScrollPane hbarPolicy="NEVER">
-                                 <content>
-                                    <Accordion fx:id="connectionsAccordion" />
-                                 </content>
-                              </ScrollPane>
+                              <TableView fx:id="dumpstersTableView" prefHeight="270.0" prefWidth="123.0" scaleShape="false">
+                                <columns>
+                                  <TableColumn fx:id="idColumn" editable="false" prefWidth="24.0" resizable="false" sortable="false" text="ID" />
+                                  <TableColumn fx:id="typeColumn" editable="false" prefWidth="52.0" resizable="false" sortable="false" text="Station" />
+                                    <TableColumn fx:id="levelColumn" editable="false" prefWidth="37.0" resizable="false" sortable="false" text="Level" />
+                                    <TableColumn fx:id="quantityColumn" editable="false" prefWidth="61.0" resizable="false" sortable="false" text="Quantity" />
+                                    <TableColumn fx:id="capacityColumn" editable="false" prefWidth="60.0" resizable="false" sortable="false" text="Capacity" />
+                                </columns>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                              </TableView>
                            </content>
                         </TitledPane>
                      </children>

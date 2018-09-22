@@ -35,4 +35,16 @@ public class Dumpster implements Serializable {
 	public DumpsterType getType() {
 		return type;
 	}
+	
+	public String getTypeName() {
+		if(type.equals(DumpsterType.CAN)) {
+			return "Can";
+		} else {
+			return "Station";
+		}
+	}
+	
+	public double getTrashPercentage() {
+		return (trashQuantity*100)/maxCapacity;
+	}
 }
