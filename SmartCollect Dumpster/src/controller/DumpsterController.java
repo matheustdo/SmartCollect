@@ -52,7 +52,10 @@ public class DumpsterController {
 		((UDPClient)udpRunnableClient).setObj(dumpster.toString());
 	}
     
-    public void changeServerObj() {
+    /**
+     * Change clientObj
+     */
+    public void changeClientObj() {
     	((UDPClient)udpRunnableClient).setObj(dumpster.toString());
     }
 }

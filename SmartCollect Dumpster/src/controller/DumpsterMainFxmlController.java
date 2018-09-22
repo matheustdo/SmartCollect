@@ -64,7 +64,7 @@ public class DumpsterMainFxmlController implements Initializable {
 	void onMouseDragged(MouseEvent event) {
 		levelLabel.setText(decimalFormat.format(quantitySlider.getValue()) + "%");
 		quantityLabel.setText(decimalFormat.format(dumpsterController.updateTrashQuantity(quantitySlider.getValue())) + "/" + capacityTextField.getText() + " l");
-		dumpsterController.changeServerObj();
+		dumpsterController.changeClientObj();
 	}
 	
 	@FXML

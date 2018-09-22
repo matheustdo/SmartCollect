@@ -89,9 +89,9 @@ public class ServerMainFxmlController implements Initializable {
         		portNumberLabel.setText(Integer.toString(serverController.getServerPort()));
             	idColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getIdNumber()).asObject());
             	typeColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTypeName()));
-            	levelColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashPercentage())));
-            	quantityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashQuantity())));
-            	capacityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getMaxCapacity())));
+            	levelColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashPercentage()) + "%"));
+            	quantityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashQuantity()) + "l"));
+            	capacityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getMaxCapacity())+ "l"));
             	while(true) {    
             		serverController.updateDumpstersCounters();
             		Platform.runLater(new Runnable() {

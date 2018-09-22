@@ -52,11 +52,11 @@
                            <content>
                               <TableView fx:id="dumpstersTableView" prefHeight="270.0" prefWidth="123.0" scaleShape="false">
                                 <columns>
-                                  <TableColumn fx:id="idColumn" editable="false" prefWidth="24.0" resizable="false" sortable="false" text="ID" />
-                                  <TableColumn fx:id="typeColumn" editable="false" prefWidth="52.0" resizable="false" sortable="false" text="Type" />
-                                    <TableColumn fx:id="levelColumn" editable="false" prefWidth="37.0" resizable="false" sortable="false" text="Level" />
-                                    <TableColumn fx:id="quantityColumn" editable="false" prefWidth="61.0" resizable="false" sortable="false" text="Quantity" />
-                                    <TableColumn fx:id="capacityColumn" editable="false" prefWidth="60.0" resizable="false" sortable="false" text="Capacity" />
+                                  <TableColumn fx:id="idColumn" editable="false" prefWidth="27.0" resizable="false" sortable="false" text="ID" />
+                                  <TableColumn fx:id="typeColumn" editable="false" prefWidth="51.0" resizable="false" sortable="false" text="Type" />
+                                    <TableColumn fx:id="levelColumn" editable="false" prefWidth="41.0" resizable="false" sortable="false" text="Level" />
+                                    <TableColumn fx:id="quantityColumn" editable="false" prefWidth="59.0" resizable="false" sortable="false" text="Quantity" />
+                                    <TableColumn fx:id="capacityColumn" editable="false" prefWidth="56.0" resizable="false" sortable="false" text="Capacity" />
                                 </columns>
                                  <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
