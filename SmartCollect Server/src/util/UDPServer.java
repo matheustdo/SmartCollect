@@ -8,13 +8,14 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Observable;
 
-import model.Dumpster;
-
-public class UDPServer implements Runnable {
+public class UDPServer extends Observable implements Runnable {
+	private Object obj;
 	private DatagramSocket serverSocket;
 	
 	public UDPServer(int serverPort, String serverIP) throws UnknownHostException, SocketException {
+		this.obj = new Object();
 		this.serverSocket = new DatagramSocket(serverPort, InetAddress.getByName(serverIP));
 	}
 	
@@ -27,12 +28,10 @@ public class UDPServer implements Runnable {
 				serverSocket.receive(receivedPacket);				
 				ByteArrayInputStream bais = new ByteArrayInputStream(receivedPacket.getData());
 				ObjectInputStream ois = new ObjectInputStream(bais);
-				Dumpster dumpster = (Dumpster) ois.readObject();
+				obj = ois.readObject();
 				ois.close();
-				
-				System.out.println("Client: " + dumpster.getIdNumber());
-				System.out.println("Trash Quantity: " + dumpster.getTrashQuantity());
-				System.out.println("# # # # #");
+				setChanged();
+				notifyObservers();
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -42,4 +41,8 @@ public class UDPServer implements Runnable {
 	public DatagramSocket getServerSocket() {
 		return serverSocket;
 	}
+
+	public Object getObj() {
+		return obj;
+	}	
 }

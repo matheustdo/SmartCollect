@@ -1,12 +1,10 @@
 package view;
 
-import controller.ServerMainFxmlController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import util.UDPServer;
 
 public class ServerMain extends Application {
 	public static void main(String[] args) {
@@ -15,9 +13,7 @@ public class ServerMain extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/ServerMain.fxml"));		
-		Parent root = loader.load();		
-		ServerMainFxmlController serverMainFxmlController = loader.getController();
+		Parent root = (Parent) FXMLLoader.load(getClass().getResource("fxml/ServerMain.fxml"));
 		
 		Scene scene = new Scene(root);		
 		

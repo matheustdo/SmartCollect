@@ -1,6 +1,5 @@
 package view;
 
-import controller.DumpsterMainFxmlController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,9 +13,7 @@ public class DumpsterMain extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/DumpsterMain.fxml"));		
-		Parent root = loader.load();		
-		DumpsterMainFxmlController dumpsterMainFxmController = loader.getController();
+		Parent root = (Parent) FXMLLoader.load(getClass().getResource("fxml/DumpsterMain.fxml"));
 		
 		Scene scene = new Scene(root, 297, 350);
 		

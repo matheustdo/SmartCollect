@@ -1,8 +1,7 @@
 package controller;
 
-import java.net.SocketException;
+import java.io.IOException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
@@ -38,8 +37,9 @@ public class ServerMainFxmlController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		try {
+			serverController.readServerConfigFile();
 			serverController.turnServerOn();
-		} catch (UnknownHostException | SocketException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		updateInfo();		

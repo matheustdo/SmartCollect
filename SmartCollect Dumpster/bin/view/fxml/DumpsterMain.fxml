@@ -114,7 +114,7 @@
                                                 </HBox>
                                                 <HBox alignment="CENTER" layoutX="102.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                    <children>
-                                                      <TextField fx:id="portTextField" prefHeight="25.0" prefWidth="135.0" promptText="Server port" text="25565" />
+                                                      <TextField fx:id="portTextField" prefHeight="25.0" prefWidth="135.0" promptText="Server port" text="4065" />
                                                    </children>
                                                 </HBox>
                                                 <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
