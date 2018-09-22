@@ -86,9 +86,9 @@ public class ServerController implements Observer {
 	}
 
 	@Override
-	public void update(Observable arg0, Object arg1) {
-		if(arg0 instanceof UDPServer) {
-			System.out.println("a");
+	public void update(Observable subject, Object arg1) {
+		if(subject instanceof UDPServer) {
+			dumpsters.put(((Dumpster)((UDPServer) subject).getObj()).getIdNumber(), ((Dumpster)((UDPServer) subject).getObj()));
 		}		
 	}
 }

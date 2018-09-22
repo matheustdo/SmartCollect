@@ -25,8 +25,7 @@ public class UDPClient implements Runnable {
 	@Override
 	public void run() {
 		try {
-            while (!socket.isClosed()) {
-            	socket.setSoTimeout(3000);
+            while (!socket.isClosed()) {            	
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 ObjectOutputStream oos = new ObjectOutputStream(baos);
                 oos.writeObject(obj);
@@ -34,8 +33,9 @@ public class UDPClient implements Runnable {
                 byte[] objData = baos.toByteArray();
                 DatagramPacket datagramPacket = new DatagramPacket(objData, objData.length, serverIP, serverPort);
                 socket.send(datagramPacket);
+                Thread.sleep(3000);
             }
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
