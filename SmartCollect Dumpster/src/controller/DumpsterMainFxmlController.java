@@ -64,10 +64,11 @@ public class DumpsterMainFxmlController implements Initializable {
 	void onMouseDragged(MouseEvent event) {
 		levelLabel.setText(decimalFormat.format(quantitySlider.getValue()) + "%");
 		quantityLabel.setText(decimalFormat.format(dumpsterController.updateTrashQuantity(quantitySlider.getValue())) + "/" + capacityTextField.getText() + " l");
+		dumpsterController.changeServerObj();
 	}
 	
 	@FXML
-    void turnOnAction(ActionEvent event) throws UnknownHostException, SocketException {
+    void turnOnAction(ActionEvent event) throws UnknownHostException, SocketException, InterruptedException {
 		createDumpster();
 		startClient();
 		toggleElements();
@@ -81,7 +82,7 @@ public class DumpsterMainFxmlController implements Initializable {
 		dumpsterController.createDumpster(id, capacity, type);
 	}
 	
-	private void startClient() throws UnknownHostException, SocketException {
+	private void startClient() throws UnknownHostException, SocketException, InterruptedException {
 		int port = Integer.parseInt(portTextField.getText());
 		String address = ipTextField.getText();
 		dumpsterController.turnClientOn(port, address);

@@ -9,9 +9,23 @@ public class Dumpster implements Serializable {
 	private double trashQuantity, maxCapacity;
 	private DumpsterType type;
 	
+	public Dumpster(int idNumber) {
+		this.idNumber = idNumber;
+		this.trashQuantity = -1;
+		this.maxCapacity = -1;
+		this.type = DumpsterType.UNKNOW;
+	}
+	
 	public Dumpster(int idNumber, double maxCapacity, DumpsterType type) { 
 		this.idNumber = idNumber;
 		this.trashQuantity = 0;
+		this.maxCapacity = maxCapacity;
+		this.type = type;
+	}
+	
+	public Dumpster(int idNumber, double trashQuantity, double maxCapacity, DumpsterType type) { 
+		this.idNumber = idNumber;
+		this.trashQuantity = trashQuantity;
 		this.maxCapacity = maxCapacity;
 		this.type = type;
 	}
@@ -39,12 +53,22 @@ public class Dumpster implements Serializable {
 	public String getTypeName() {
 		if(type.equals(DumpsterType.CAN)) {
 			return "Can";
-		} else {
+		} else if(type.equals(DumpsterType.STATION)) {
 			return "Station";
+		} else {
+			return "Unknow";
 		}
 	}
 	
 	public double getTrashPercentage() {
-		return (trashQuantity*100)/maxCapacity;
+		if(maxCapacity == -1) {
+			return -1;
+		} else {
+			return (trashQuantity*100)/maxCapacity;
+		}
+	}
+	
+	public String toString() {
+		return Integer.toString(idNumber) + " " + Double.toString(trashQuantity);
 	}
 }

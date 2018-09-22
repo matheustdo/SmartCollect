@@ -72,8 +72,7 @@ public class ServerMainFxmlController implements Initializable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		pageUpdater();
-		
+		pageUpdater();		
 		updateInfo();		
 	}    
 	
@@ -83,7 +82,9 @@ public class ServerMainFxmlController implements Initializable {
 	
 	private void pageUpdater() {		
 		new Thread(new Runnable() { 
-            public void run() {    
+            private ObservableList<Dumpster> ol;
+
+			public void run() {    
             	ipNumberLabel.setText(serverController.getServerIp());
         		portNumberLabel.setText(Integer.toString(serverController.getServerPort()));
             	idColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getIdNumber()).asObject());
@@ -102,7 +103,7 @@ public class ServerMainFxmlController implements Initializable {
             		    }
             		});            		     		
             		try {
-            			ObservableList ol = FXCollections.observableArrayList(serverController.getDumpstersList());
+            			ol = FXCollections.observableArrayList(serverController.getDumpstersList());
 						dumpstersTableView.setItems(ol);						
 						Thread.sleep(500);
 					} catch (InterruptedException e) {

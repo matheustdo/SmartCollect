@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import model.Dumpster;
 import model.DumpsterType;
@@ -86,7 +87,26 @@ public class ServerController implements Observer {
 	@Override
 	public void update(Observable subject, Object arg1) {
 		if(subject instanceof UDPServer) {
-			dumpsters.put(((Dumpster)((UDPServer) subject).getObj()).getIdNumber(), ((Dumpster)((UDPServer) subject).getObj()));
+			if(((UDPServer) subject).getObj() instanceof Dumpster) {
+				dumpsters.put(((Dumpster)((UDPServer) subject).getObj()).getIdNumber(), ((Dumpster)((UDPServer) subject).getObj()));
+			} else if (((UDPServer) subject).getObj() instanceof String){
+				String obj = (String) ((UDPServer) subject).getObj();
+				StringTokenizer st = new StringTokenizer(obj);
+				int id = Integer.parseInt(st.nextToken());
+				Double trashQuantity = Double.parseDouble(st.nextToken());
+				Dumpster dumpster;
+				
+				if(dumpsters.containsKey(id)) {
+					dumpster = dumpsters.get(id);
+					dumpster.setTrashQuantity(trashQuantity);				
+					double capacity = dumpster.getMaxCapacity();
+					DumpsterType type = dumpster.getType();				
+					dumpster = new Dumpster(id, trashQuantity, capacity, type);
+					dumpsters.put(id, dumpster);
+				} else {
+					dumpsters.put(id, new Dumpster(id));
+				}				 
+			}			
 		}		
 	}
 	
@@ -94,7 +114,7 @@ public class ServerController implements Observer {
 		Set<Integer> keys = dumpsters.keySet();
 		List<Dumpster> dumpstersList = new ArrayList<Dumpster>();
 		for(Integer key : keys) {
-			if(key != null) {			
+			if(key != null) {
 				dumpstersList.add(dumpsters.get(key));
 			}
 		}
@@ -122,7 +142,7 @@ public class ServerController implements Observer {
 				Dumpster dumpster = dumpsters.get(key);
 				if(dumpster.getType().equals(DumpsterType.CAN)) {
 					trashCansQuantity++;
-				} else {
+				} else if (dumpster.getType().equals(DumpsterType.STATION)){
 					transferStationsQuantity++;
 				}
 			}

@@ -13,7 +13,7 @@ public class UDPClient implements Runnable {
 	private final InetAddress serverIP;
 	private final int serverPort;
 	private final DatagramSocket socket;
-	private final Object obj;
+	private Object obj;	
 	
 	public UDPClient(int serverPort, String serverIP, Object obj) throws UnknownHostException, SocketException {
 		this.serverIP = InetAddress.getByName(serverIP);
@@ -28,15 +28,21 @@ public class UDPClient implements Runnable {
             while (!socket.isClosed()) {            	
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 ObjectOutputStream oos = new ObjectOutputStream(baos);
-                oos.writeObject(obj);
+                
+                DatagramPacket datagramPacket;
+            	oos.writeObject(obj);
                 oos.close();
                 byte[] objData = baos.toByteArray();
-                DatagramPacket datagramPacket = new DatagramPacket(objData, objData.length, serverIP, serverPort);
+            	datagramPacket = new DatagramPacket(objData, objData.length, serverIP, serverPort);           
                 socket.send(datagramPacket);
                 Thread.sleep(3000);
             }
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void setObj(Object obj) {
+		this.obj = obj;
 	}
 }
