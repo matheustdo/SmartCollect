@@ -6,7 +6,6 @@ import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -19,7 +18,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import model.Dumpster;
-import model.DumpsterType;
+import util.Log;
 
 public class ServerMainFxmlController implements Initializable {
 	@FXML
@@ -70,7 +69,6 @@ public class ServerMainFxmlController implements Initializable {
     @FXML
     private TableColumn<?, ?> driversRouteColumn;
 
-
     @FXML
     private TextArea logTextArea;
     
@@ -81,12 +79,27 @@ public class ServerMainFxmlController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		try {
 			serverController.readServerConfigFile();
-			serverController.turnUdpServerOn();
-			serverController.turnTcpServerOn();
+			logTextArea.appendText(Log.server("Starting UDP server" + "\n"));
+			serverController.turnUdpServerOn();			
+			logTextArea.appendText(Log.server("UDP server has inialized at " + 
+					   serverController.getServerIp() + 
+					   serverController.getServerPort()) + "\n");
+			logTextArea.appendText(Log.server("Starting TCP server" + "\n"));
+			serverController.turnTcpServerOn();	
+			logTextArea.appendText(Log.server("TCP server has initialized at " + 
+					   serverController.getServerIp() + 
+					   serverController.getServerPort()) + "\n");
+			
 		} catch (IOException e) {
+			logTextArea.appendText(e.getStackTrace() + "\n");
 			e.printStackTrace();
 		}
 		pageUpdater();		
+	}
+	
+	public void exit() {
+		logTextArea.appendText(Log.server("Closing server" + "\n"));
+		logTextArea.appendText(Log.server("Server closed" + "\n"));
 	}
 	
 	private void pageUpdater() {		

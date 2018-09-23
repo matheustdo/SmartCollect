@@ -25,6 +25,5 @@ public class DriverMain extends Application {
 		primaryStage.setOnCloseRequest(event -> {
 			System.exit(0);
 			});
-	}
-	
+	}	
 }

@@ -33,7 +33,7 @@ public class UDPClient implements Runnable {
             	oos.writeObject(obj);
                 oos.close();
                 byte[] objData = baos.toByteArray();
-            	datagramPacket = new DatagramPacket(objData, objData.length, serverIP, serverPort);           
+            	datagramPacket = new DatagramPacket(objData, objData.length, serverIP, serverPort);
                 socket.send(datagramPacket);
                 Thread.sleep(3000);
             }

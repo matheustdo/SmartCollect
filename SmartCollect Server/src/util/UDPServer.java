@@ -27,6 +27,7 @@ public class UDPServer extends Observable implements Runnable {
 			try {
 				serverSocket.receive(receivedPacket);				
 				ByteArrayInputStream bais = new ByteArrayInputStream(receivedPacket.getData());
+				System.out.println(bais.available());
 				ObjectInputStream ois = new ObjectInputStream(bais);
 				obj = ois.readObject();
 				ois.close();

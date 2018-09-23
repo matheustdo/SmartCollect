@@ -8,6 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +32,7 @@ public class ServerController implements Observer {
 	private String serverIp;
 	private UDPServer runnableUdpServer;
 	private TCPServer runnableTcpServer;
-	private Map<Integer, Dumpster> dumpsters;
+	private Map<Integer, Dumpster> dumpsters;	
 	
 	public ServerController() {
 		trashCansQuantity = 0;

@@ -16,7 +16,7 @@ public class ServerMain extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/ServerMain.fxml"));		
 		Parent root = loader.load();		
-		ServerMainFxmlController serverFmlController = loader.getController();
+		ServerMainFxmlController serverFxmlController = loader.getController();
 		
 		Scene scene = new Scene(root);		
 		
@@ -27,6 +27,7 @@ public class ServerMain extends Application {
 		primaryStage.show();
 		
 		primaryStage.setOnCloseRequest(event -> {
+			serverFxmlController.exit();
 			System.exit(0);
 			});
 	}
