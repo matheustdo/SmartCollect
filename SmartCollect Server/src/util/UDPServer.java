@@ -38,7 +38,7 @@ public class UDPServer extends Observable implements Runnable {
 		}
 	}
 	
-	public DatagramSocket getServerSocket() {
+	public DatagramSocket getDatagramSocket() {
 		return serverSocket;
 	}
 

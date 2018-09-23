@@ -19,6 +19,7 @@ import java.util.StringTokenizer;
 
 import model.Dumpster;
 import model.DumpsterType;
+import util.TCPServer;
 import util.UDPServer;
 
 public class ServerController implements Observer {
@@ -28,6 +29,7 @@ public class ServerController implements Observer {
 				motoristsQuantity;
 	private String serverIp;
 	private UDPServer runnableUdpServer;
+	private TCPServer runnableTcpServer;
 	private Map<Integer, Dumpster> dumpsters;
 	
 	public ServerController() {
@@ -37,19 +39,26 @@ public class ServerController implements Observer {
 		dumpsters = new HashMap<Integer, Dumpster>();		
 	}
 	
-	public void turnServerOn() throws UnknownHostException, SocketException {
+	public void turnUdpServerOn() throws UnknownHostException, SocketException {
 		runnableUdpServer = new UDPServer(serverPort, serverIp);
 		Thread threadUDPServer =  new Thread(runnableUdpServer);
 		threadUDPServer.start();
 		runnableUdpServer.addObserver(this);
 	}
 	
+	public void turnTcpServerOn() throws IOException {
+		runnableTcpServer = new TCPServer(serverPort, serverIp);
+		Thread threadTCPServer =  new Thread(runnableTcpServer);
+		threadTCPServer.start();
+		runnableTcpServer.addObserver(this);
+	}
+	
 	public String getServerIp() {		
-		return ((UDPServer)runnableUdpServer).getServerSocket().getLocalAddress().getHostAddress();
+		return ((UDPServer)runnableUdpServer).getDatagramSocket().getLocalAddress().getHostAddress();
 	}
 	
 	public int getServerPort() {
-		return ((UDPServer)runnableUdpServer).getServerSocket().getLocalPort();
+		return ((UDPServer)runnableUdpServer).getDatagramSocket().getLocalPort();
 	}
 	
 	public Map<Integer, Dumpster> getDumpsters() {

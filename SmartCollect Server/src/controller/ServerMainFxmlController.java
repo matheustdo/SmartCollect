@@ -68,7 +68,8 @@ public class ServerMainFxmlController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		try {
 			serverController.readServerConfigFile();
-			serverController.turnServerOn();
+			serverController.turnUdpServerOn();
+			serverController.turnTcpServerOn();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
