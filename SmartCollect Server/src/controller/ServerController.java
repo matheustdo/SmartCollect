@@ -64,21 +64,24 @@ public class ServerController implements Observer {
 		
 		FileWriter fw = new FileWriter(file.getAbsoluteFile());
         BufferedWriter bw = new BufferedWriter(fw);
-        bw.write("server-ip: " + serverIp + "\r\nserver-port: " + Integer.toString(serverPort));
+        bw.write("#SmartCollect server properties\r\n" + "server-ip: " + serverIp + "\r\nserver-port: " + Integer.toString(serverPort));
         bw.close();
         fw.close();
 	}
 
 	public void readServerConfigFile() throws IOException {
-		File file = new File("serverconfig.xml");
+		File file = new File("server.properties");
 		
 		if(!file.exists()) {
 			createServerConfigFile(file);
 		} else {
 			FileReader fr = new FileReader(file);
             BufferedReader br = new BufferedReader(fr);  
-            serverIp = br.readLine().replace("server-ip: ", "");
-            serverPort = Integer.parseInt(br.readLine().replace("server-port: ", ""));
+            br.readLine();
+            String ipLine = br.readLine().replaceAll(" ", "");
+            serverIp = ipLine.replace("server-ip:", "");
+            String portLine = br.readLine().replaceAll(" ", "");
+            serverPort = Integer.parseInt(portLine.replace("server-port:", ""));
             br.close();
             fr.close();
 		}

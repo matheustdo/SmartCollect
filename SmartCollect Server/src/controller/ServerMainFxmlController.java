@@ -73,11 +73,6 @@ public class ServerMainFxmlController implements Initializable {
 			e.printStackTrace();
 		}
 		pageUpdater();		
-		updateInfo();		
-	}    
-	
-	public void updateInfo() {
-		
 	}
 	
 	private void pageUpdater() {		
