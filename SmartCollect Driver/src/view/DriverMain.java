@@ -15,7 +15,7 @@ public class DriverMain extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = (Parent) FXMLLoader.load(getClass().getResource("fxml/DriverMain.fxml"));
 		
-		Scene scene = new Scene(root, 297, 350);
+		Scene scene = new Scene(root, 302, 323);
 		
 		primaryStage.setTitle("SmartColect Driver");
 		primaryStage.setScene(scene);
