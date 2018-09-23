@@ -35,7 +35,7 @@ public class ServerMainFxmlController implements Initializable {
     private Label transferStationsQuantityLabel;
 
     @FXML
-    private Label motoristsQuantityLabel;
+    private Label driversQuantityLabel;
 
     @FXML
     private Accordion connectionsAccordion;
@@ -44,19 +44,32 @@ public class ServerMainFxmlController implements Initializable {
     private TableView<Dumpster> dumpstersTableView;
     
     @FXML
-    private TableColumn<Dumpster, Integer> idColumn;
+    private TableColumn<Dumpster, Integer> dumpstersIdColumn;
 
     @FXML
-    private TableColumn<Dumpster, String> typeColumn;
+    private TableColumn<Dumpster, String> dumpstersTypeColumn;
 
     @FXML
-    private TableColumn<Dumpster, String> levelColumn;
+    private TableColumn<Dumpster, String> dumpstersLevelColumn;
 
     @FXML
-    private TableColumn<Dumpster, String> quantityColumn;
+    private TableColumn<Dumpster, String> dumpstersQuantityColumn;
     
     @FXML
-    private TableColumn<Dumpster, String> capacityColumn;
+    private TableColumn<Dumpster, String> dumpstersCapacityColumn;
+    
+    @FXML
+    private TableView<?> driversTableView;
+
+    @FXML
+    private TableColumn<?, ?> driversIdColumn;
+
+    @FXML
+    private TableColumn<?, ?> driversPositionColumn;
+
+    @FXML
+    private TableColumn<?, ?> driversRouteColumn;
+
 
     @FXML
     private TextArea logTextArea;
@@ -83,11 +96,11 @@ public class ServerMainFxmlController implements Initializable {
 			public void run() {    
             	ipNumberLabel.setText(serverController.getServerIp());
         		portNumberLabel.setText(Integer.toString(serverController.getServerPort()));
-            	idColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getIdNumber()).asObject());
-            	typeColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTypeName()));
-            	levelColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashPercentage()) + "%"));
-            	quantityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashQuantity()) + "l"));
-            	capacityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getMaxCapacity())+ "l"));
+            	dumpstersIdColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getIdNumber()).asObject());
+            	dumpstersTypeColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTypeName()));
+            	dumpstersLevelColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashPercentage()) + "%"));
+            	dumpstersQuantityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashQuantity()) + "l"));
+            	dumpstersCapacityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getMaxCapacity())+ "l"));
             	while(true) {    
             		serverController.updateDumpstersCounters();
             		Platform.runLater(new Runnable() {
@@ -95,7 +108,7 @@ public class ServerMainFxmlController implements Initializable {
             		    public void run() {
                     		trashCansQuantityLabel.setText(Integer.toString(serverController.getTrashCansQuantity()));
                     		transferStationsQuantityLabel.setText(Integer.toString(serverController.getTransferStationsQuantity()));
-                    		motoristsQuantityLabel.setText(Integer.toString(serverController.getMotoristsQuantity()));
+                    		driversQuantityLabel.setText(Integer.toString(serverController.getDriversQuantity()));
             		    }
             		});            		     		
             		try {

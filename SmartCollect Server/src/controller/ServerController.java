@@ -26,7 +26,7 @@ public class ServerController implements Observer {
 	private int serverPort,
 				trashCansQuantity,
 				transferStationsQuantity,
-				motoristsQuantity;
+				driversQuantity;
 	private String serverIp;
 	private UDPServer runnableUdpServer;
 	private TCPServer runnableTcpServer;
@@ -35,7 +35,7 @@ public class ServerController implements Observer {
 	public ServerController() {
 		trashCansQuantity = 0;
 		transferStationsQuantity = 0;
-		motoristsQuantity = 0;
+		driversQuantity = 0;
 		dumpsters = new HashMap<Integer, Dumpster>();		
 	}
 	
@@ -141,7 +141,7 @@ public class ServerController implements Observer {
 		return transferStationsQuantity;
 	}
 	
-	public int getMotoristsQuantity() {
+	public int getDriversQuantity() {
 		return 0;
 	}
 	

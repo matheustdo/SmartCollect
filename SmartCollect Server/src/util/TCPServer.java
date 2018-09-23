@@ -1,6 +1,7 @@
 package util;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -27,14 +28,17 @@ public class TCPServer extends Observable implements Runnable {
 				ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
 				
 				oos.flush();
-				oos.writeObject(outObj);
-				
+				oos.writeObject(outObj);				
 				oos.close();
+				
+				ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
+				ois.readObject();
+				
 				clientSocket.close();
 				
 				setChanged();
 				notifyObservers();
-			} catch (IOException e) {
+			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}	
 		}
