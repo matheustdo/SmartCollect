@@ -33,18 +33,20 @@ public class ServerController implements Observer {
 	private int serverPort,
 				trashCansQuantity,
 				transferStationsQuantity,
-				driversQuantity;
+				driversQuantity,
+				minimunTrashPercentage;
 	private String serverIp;
 	private UDPServer runnableUdpServer;
 	private TCPServer runnableTcpServer;
-	private Map<Integer, Dumpster> dumpsters;	
+	private Map<Integer, Dumpster> dumpsters;
 	private final static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
 	public ServerController() {
 		trashCansQuantity = 0;
 		transferStationsQuantity = 0;
 		driversQuantity = 0;
-		dumpsters = new HashMap<Integer, Dumpster>();		
+		minimunTrashPercentage = 80;
+		dumpsters = new HashMap<Integer, Dumpster>();
 	}
 	
 	public void turnUdpServerOn() throws UnknownHostException, SocketException {
@@ -55,7 +57,7 @@ public class ServerController implements Observer {
 	}
 	
 	public void turnTcpServerOn() throws IOException {
-		runnableTcpServer = new TCPServer(serverPort, serverIp);
+		runnableTcpServer = new TCPServer(getRoute(3), serverPort, serverIp);
 		Thread threadTCPServer =  new Thread(runnableTcpServer);
 		threadTCPServer.start();
 		runnableTcpServer.addObserver(this);
@@ -81,7 +83,9 @@ public class ServerController implements Observer {
 		
 		FileWriter fw = new FileWriter(file.getAbsoluteFile());
         BufferedWriter bw = new BufferedWriter(fw);
-        bw.write("#SmartCollect server properties\r\n" + "server-ip: " + serverIp + "\r\nserver-port: " + Integer.toString(serverPort));
+        bw.write("#SmartCollect server properties\r\n" + "server-ip: " + serverIp +
+        		 "\r\nserver-port: " + Integer.toString(serverPort) + "\r\nminimun-trash-percentage: " + 
+        		 minimunTrashPercentage);
         bw.close();
         fw.close();
 	}
@@ -99,6 +103,8 @@ public class ServerController implements Observer {
             serverIp = ipLine.replace("server-ip:", "");
             String portLine = br.readLine().replaceAll(" ", "");
             serverPort = Integer.parseInt(portLine.replace("server-port:", ""));
+            String minimunTrashLine = br.readLine().replaceAll(" ", "");
+            minimunTrashPercentage = Integer.parseInt(minimunTrashLine.replace("minimun-trash-percentage:", ""));
             br.close();
             fr.close();
 		}
@@ -185,6 +191,7 @@ public class ServerController implements Observer {
 		fos.close();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void loadServerData() throws IOException, ClassNotFoundException {
 		File file = new File("server.dat");
 		
@@ -223,5 +230,50 @@ public class ServerController implements Observer {
         BufferedWriter bw = new BufferedWriter(fw);
         bw.write(log);
         bw.close();
+	}
+	
+	public String getRoute(int pos) {
+		List<Dumpster> dumpstersList = getDumpstersList();
+		String route = new String();
+		int closer = 0, closerIndex = 0, before = pos;
+		
+		if(!dumpstersList.isEmpty()) {
+			closer =  dumpstersList.get(0).getIdNumber();
+		}
+		
+		while(!dumpstersList.isEmpty()) {
+			for(int j = 0; j < dumpstersList.size(); j++) {
+				Dumpster dumpster = dumpstersList.get(j);
+				if(dumpster.getType().equals(DumpsterType.CAN) && dumpster.getTrashPercentage() >= minimunTrashPercentage) {
+					if(closer != getCloser(before, dumpster.getIdNumber(), closer)) {
+						closer = dumpster.getIdNumber();
+						closerIndex = j;
+					}
+				}
+			}
+			
+			/*if(closerIndex >= 0) {
+				dumpstersList.remove(closerIndex);
+			}*/
+			
+			before = closer;
+			if(dumpstersList.get(closerIndex).getType().equals(DumpsterType.CAN)) {
+				route += closer + " ";
+			}	
+			dumpstersList.remove(closerIndex);
+			if(!dumpstersList.isEmpty()) {
+				closer = dumpstersList.get(0).getIdNumber();
+				closerIndex = 0;
+			}
+		}
+		return route;		
+	}
+	
+	private int getCloser(int current, int a, int b) {
+		if(Math.abs(current-a) <= Math.abs(current-b)) {
+			return a;
+		} else {
+			return b;
+		}
 	}
 }

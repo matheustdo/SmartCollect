@@ -1,0 +1,28 @@
+[24/09/2018] [00:52:16] [SERVER THREAD/INFO]: Loading properties
+[24/09/2018] [00:52:16] [SERVER THREAD/INFO]: Properties loaded
+[24/09/2018] [00:52:16] [SERVER THREAD/INFO]: Starting UDP server
+[24/09/2018] [00:52:16] [SERVER THREAD/EXCEPTION]: java.net.BindException: Address already in use: Cannot bind
+at java.net.DualStackPlainDatagramSocketImpl.socketBind(Unknown Source)
+at java.net.DualStackPlainDatagramSocketImpl.bind0(Unknown Source)
+at java.net.AbstractPlainDatagramSocketImpl.bind(Unknown Source)
+at java.net.DatagramSocket.bind(Unknown Source)
+at java.net.DatagramSocket.<init>(Unknown Source)
+at java.net.DatagramSocket.<init>(Unknown Source)
+at util.UDPServer.<init>(UDPServer.java:19)
+at controller.ServerController.turnUdpServerOn(ServerController.java:51)
+at controller.ServerMainFxmlController.initialize(ServerMainFxmlController.java:86)
+at javafx.fxml.FXMLLoader.loadImpl(FXMLLoader.java:2548)
+at javafx.fxml.FXMLLoader.loadImpl(FXMLLoader.java:2441)
+at javafx.fxml.FXMLLoader.load(FXMLLoader.java:2409)
+at view.ServerMain.start(ServerMain.java:18)
+at com.sun.javafx.application.LauncherImpl.lambda$launchApplication1$161(LauncherImpl.java:863)
+at com.sun.javafx.application.PlatformImpl.lambda$runAndWait$174(PlatformImpl.java:326)
+at com.sun.javafx.application.PlatformImpl.lambda$null$172(PlatformImpl.java:295)
+at java.security.AccessController.doPrivileged(Unknown Source)
+at com.sun.javafx.application.PlatformImpl.lambda$runLater$173(PlatformImpl.java:294)
+at com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:95)
+at com.sun.glass.ui.win.WinApplication._runLoop(WinApplication.java:-2)
+at com.sun.glass.ui.win.WinApplication.lambda$null$147(WinApplication.java:177)
+at java.lang.Thread.run(Unknown Source)
+
+[24/09/2018] [00:52:17] [SERVER THREAD/INFO]: Closing server

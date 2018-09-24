@@ -9,7 +9,7 @@ import util.UDPClient;
 
 public class DumpsterController {
     private Dumpster dumpster;
-    private Runnable udpRunnableClient;
+    private Runnable runnableUdpClient;
     
     /**
      * Creates a dumpster
@@ -45,17 +45,17 @@ public class DumpsterController {
      * @throws InterruptedException 
      */
     public void turnClientOn(int serverPort, String serverIP) throws UnknownHostException, SocketException, InterruptedException {
-    	udpRunnableClient = new UDPClient(serverPort, serverIP, dumpster);
-		Thread threadClient =  new Thread(udpRunnableClient);		
+    	runnableUdpClient = new UDPClient(serverPort, serverIP, dumpster);
+		Thread threadClient =  new Thread(runnableUdpClient);		
 		threadClient.start();
 		Thread.sleep(50);
-		((UDPClient)udpRunnableClient).setObj(dumpster.toString());
+		((UDPClient)runnableUdpClient).setObj(dumpster.toString());
 	}
     
     /**
      * Change clientObj
      */
     public void changeClientObj() {
-    	((UDPClient)udpRunnableClient).setObj(dumpster.toString());
+    	((UDPClient)runnableUdpClient).setObj(dumpster.toString());
     }
 }

@@ -51,15 +51,15 @@
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
                                        <children>
-                                          <TextField promptText="Ex: 7" />
+                                          <TextField fx:id="driverIdTextField" promptText="Ex: 7" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <children>
-                                          <TextField promptText="Ex: 42" />
+                                          <TextField fx:id="driverPosTextField" promptText="Ex: 42" />
                                        </children>
                                     </HBox>
-                                    <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="163.0" text="Turn on" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <Button fx:id="turnOnButton" mnemonicParsing="false" onAction="#turnOnButtonAction" prefHeight="25.0" prefWidth="163.0" text="Turn on" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                     <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
                                        <children>
                                           <Label fx:id="statusTextField" contentDisplay="CENTER" prefHeight="17.0" prefWidth="65.0" text="OFFLINE" textAlignment="CENTER" textFill="#9c0000" />
@@ -84,7 +84,7 @@
                      <items>
                         <AnchorPane prefHeight="141.0" prefWidth="300.0">
                            <children>
-                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="55.0" prefHeight="88.0" prefWidth="89.0" text="1" textAlignment="RIGHT" textFill="#f20000">
+                              <Label fx:id="nextDumpsterLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="55.0" prefHeight="88.0" prefWidth="89.0" text="--" textAlignment="RIGHT" textFill="#f20000">
                                  <font>
                                     <Font name="System Bold Italic" size="72.0" />
                                  </font>
@@ -94,7 +94,7 @@
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="122.0" layoutY="66.0" prefHeight="88.0" prefWidth="164.0" text="-&gt; 2 -&gt; 3 -&gt; 4 -&gt; 5" textFill="#c60000" wrapText="true">
+                              <Label fx:id="routeRestLabel" layoutX="108.0" layoutY="64.0" prefHeight="88.0" prefWidth="182.0" textFill="#c60000" wrapText="true">
                                  <font>
                                     <Font name="System Bold" size="18.0" />
                                  </font>
