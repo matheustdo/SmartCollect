@@ -13,6 +13,10 @@ public class Log {
 	}
 	
 	public static String server(String s) {
-		return time() + " [SERVER THREAD]: " + s;
+		return time() + " [SERVER THREAD/INFO]: " + s;
+	}
+	
+	public static String serverError(String s) {
+		return time() + " [SERVER THREAD/EXCEPTION]: " + s;
 	}
 }

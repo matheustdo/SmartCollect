@@ -3,14 +3,19 @@ package controller;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +38,7 @@ public class ServerController implements Observer {
 	private UDPServer runnableUdpServer;
 	private TCPServer runnableTcpServer;
 	private Map<Integer, Dumpster> dumpsters;	
+	private final static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
 	public ServerController() {
 		trashCansQuantity = 0;
@@ -161,5 +167,61 @@ public class ServerController implements Observer {
 				}
 			}
 		}
+	}
+	
+	public void saveServerData() throws IOException {
+		File file = new File("server.dat");
+		
+		if(!file.exists()) {
+			file.createNewFile();
+		}		
+		
+		FileOutputStream fos = new FileOutputStream(file);			 
+		ObjectOutputStream oos = new ObjectOutputStream(fos); 
+		oos.writeObject(dumpsters); 
+		oos.flush(); 
+		oos.close(); 
+		fos.flush(); 
+		fos.close();
+	}
+	
+	public void loadServerData() throws IOException, ClassNotFoundException {
+		File file = new File("server.dat");
+		
+		if(file.exists()) {
+			FileInputStream fis = new FileInputStream(file);	 
+			ObjectInputStream ois = new ObjectInputStream(fis);	 
+			Object obj = ois.readObject();
+			
+			if(obj instanceof Map<?, ?>) {
+				dumpsters = (Map<Integer, Dumpster>) obj;
+			}
+			
+			ois.close(); 
+			fis.close();
+		}		
+	}
+	
+	public void saveServerLog(String log) throws IOException {
+		File dir = new File("logs");
+		if(!dir.exists()) {
+			dir.mkdir();
+		}
+		
+		Date date = new Date();
+		int logNumber = 1;
+		File file = new File("logs/" + dateFormat.format(date) + "-" + Integer.toString(logNumber) + ".log");
+		
+		while(file.exists()) {
+			logNumber++;
+			file = new File("logs/" + dateFormat.format(date) + "-" + Integer.toString(logNumber) + ".log");
+		}		
+				
+		file.createNewFile();
+		
+		FileWriter fw = new FileWriter(file.getAbsoluteFile());
+        BufferedWriter bw = new BufferedWriter(fw);
+        bw.write(log);
+        bw.close();
 	}
 }

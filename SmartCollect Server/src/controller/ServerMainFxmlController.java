@@ -77,21 +77,23 @@ public class ServerMainFxmlController implements Initializable {
     
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		try {
+		try {			
+			serverController.loadServerData();
+			logTextArea.appendText(Log.server("Loading properties" + "\n"));
 			serverController.readServerConfigFile();
+			logTextArea.appendText(Log.server("Properties loaded" + "\n"));
 			logTextArea.appendText(Log.server("Starting UDP server" + "\n"));
 			serverController.turnUdpServerOn();			
-			logTextArea.appendText(Log.server("UDP server has inialized at " + 
+			logTextArea.appendText(Log.server("UDP server has initialized at " + 
 					   serverController.getServerIp() + 
 					   serverController.getServerPort()) + "\n");
 			logTextArea.appendText(Log.server("Starting TCP server" + "\n"));
 			serverController.turnTcpServerOn();	
 			logTextArea.appendText(Log.server("TCP server has initialized at " + 
 					   serverController.getServerIp() + 
-					   serverController.getServerPort()) + "\n");
-			
-		} catch (IOException e) {
-			logTextArea.appendText(e.getStackTrace() + "\n");
+					   serverController.getServerPort()) + "\n");			
+		} catch (IOException | ClassNotFoundException e) {
+			logTextArea.appendText(Log.serverError(printStackTrace(e) + "\n"));
 			e.printStackTrace();
 		}
 		pageUpdater();		
@@ -99,6 +101,13 @@ public class ServerMainFxmlController implements Initializable {
 	
 	public void exit() {
 		logTextArea.appendText(Log.server("Closing server" + "\n"));
+		try {
+			serverController.saveServerData();
+			serverController.saveServerLog(logTextArea.getText().replaceAll("\n", System.getProperty("line.separator")));
+		} catch (IOException e) {
+			logTextArea.appendText(Log.serverError(e.getStackTrace() + "\n"));
+			e.printStackTrace();
+		}
 		logTextArea.appendText(Log.server("Server closed" + "\n"));
 	}
 	
@@ -134,5 +143,22 @@ public class ServerMainFxmlController implements Initializable {
             	}            	
             }
         }).start();
+	}
+	
+	private String printStackTrace(Exception e) {
+		String stackTrace = e.toString() + "\n";
+		StackTraceElement[] elements = e.getStackTrace();
+		
+		for(int i = 0; i < elements.length; i++) {
+			StackTraceElement s = elements[i];
+			stackTrace += "at " + s.getClassName() + "." + s.getMethodName();
+			if(s.getFileName() == null) {
+				stackTrace += "(Unknown Source)\n";
+			} else {
+				stackTrace += "(" + s.getFileName() + ":" + s.getLineNumber() + ")\n";
+			}
+		}
+		
+		return stackTrace;		
 	}
 }
