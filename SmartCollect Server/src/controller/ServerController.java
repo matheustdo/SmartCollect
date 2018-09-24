@@ -123,11 +123,11 @@ public class ServerController implements Observer {
 				Dumpster dumpster;
 				
 				if(dumpsters.containsKey(id)) {
-					dumpster = dumpsters.get(id);
-					dumpster.setTrashQuantity(trashQuantity);				
+					dumpster = dumpsters.get(id);				
+					int regionId = dumpster.getRegionIdNumber();
 					double capacity = dumpster.getMaxCapacity();
 					DumpsterType type = dumpster.getType();				
-					dumpster = new Dumpster(id, trashQuantity, capacity, type);
+					dumpster = new Dumpster(id, regionId, trashQuantity, capacity, type);
 					dumpsters.put(id, dumpster);
 				} else {
 					dumpsters.put(id, new Dumpster(id));

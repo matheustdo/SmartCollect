@@ -44,6 +44,9 @@ public class ServerMainFxmlController implements Initializable {
     
     @FXML
     private TableColumn<Dumpster, Integer> dumpstersIdColumn;
+    
+    @FXML
+    private TableColumn<Dumpster, Integer> dumpstersRegionColumn;
 
     @FXML
     private TableColumn<Dumpster, String> dumpstersTypeColumn;
@@ -62,6 +65,9 @@ public class ServerMainFxmlController implements Initializable {
 
     @FXML
     private TableColumn<?, ?> driversIdColumn;
+    
+    @FXML
+    private TableColumn<?, ?> driversRegionColumn;
 
     @FXML
     private TableColumn<?, ?> driversPositionColumn;
@@ -119,6 +125,7 @@ public class ServerMainFxmlController implements Initializable {
             	ipNumberLabel.setText(serverController.getServerIp());
         		portNumberLabel.setText(Integer.toString(serverController.getServerPort()));
             	dumpstersIdColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getIdNumber()).asObject());
+            	dumpstersRegionColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getRegionIdNumber()).asObject());
             	dumpstersTypeColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTypeName()));
             	dumpstersLevelColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashPercentage()) + "%"));
             	dumpstersQuantityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashQuantity()) + "l"));

@@ -18,11 +18,11 @@ public class ServerMain extends Application {
 		Parent root = loader.load();		
 		ServerMainFxmlController serverFxmlController = loader.getController();
 		
-		Scene scene = new Scene(root);		
+		Scene scene = new Scene(root, 790, 480);		
 		
 		primaryStage.setTitle("SmartColect Server");
 		primaryStage.setScene(scene);
-		primaryStage.setMinWidth(675);
+		primaryStage.setMinWidth(710);
 		primaryStage.setMinHeight(520);
 		primaryStage.show();
 		

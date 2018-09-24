@@ -39,6 +39,9 @@ public class DumpsterMainFxmlController implements Initializable {
 
     @FXML
     private TextField idTextField;
+    
+    @FXML
+    private TextField regionIdTextField;
 
     @FXML
     private TextField capacityTextField;
@@ -77,17 +80,16 @@ public class DumpsterMainFxmlController implements Initializable {
 	
 	private void createDumpster() {
 		int id = Integer.parseInt(idTextField.getText());
+		int regionId = Integer.parseInt(regionIdTextField.getText());
 		double capacity = Double.parseDouble(capacityTextField.getText());
 		String type = typeChoicer.getSelectionModel().selectedItemProperty().getValue();
-		dumpsterController.createDumpster(id, capacity, type);
+		dumpsterController.createDumpster(id, regionId, capacity, type);
 	}
 	
 	private void startClient() throws UnknownHostException, SocketException, InterruptedException {
 		int port = Integer.parseInt(portTextField.getText());
 		String address = ipTextField.getText();
-		dumpsterController.turnClientOn(port, address);
-		statusTextField.setText("ONLINE");
-		statusTextField.setTextFill(Color.DARKGREEN);
+		dumpsterController.turnClientOn(port, address);		
 	}
 	
 	private void toggleElements() {
@@ -95,8 +97,11 @@ public class DumpsterMainFxmlController implements Initializable {
 		portTextField.setDisable(true);
 		typeChoicer.setDisable(true);
 		idTextField.setDisable(true);
+		regionIdTextField.setDisable(true);
 		capacityTextField.setDisable(true);
 		turnOnButton.setDisable(true);		
 		quantitySlider.setDisable(false);
+		statusTextField.setText("ONLINE");
+		statusTextField.setTextFill(Color.DARKGREEN);
 	}
 }

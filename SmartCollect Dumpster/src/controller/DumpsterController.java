@@ -18,11 +18,11 @@ public class DumpsterController {
      * @param address Dumpster street address
      * @param type Dumpster type
      */
-    public void createDumpster(int idNumber, double maxCapacity, String type) {
+    public void createDumpster(int idNumber, int regionIdNumber, double maxCapacity, String type) {
     	if(type.equals("Trash can")) {
-    		dumpster = new Dumpster(idNumber, maxCapacity, DumpsterType.CAN);
+    		dumpster = new Dumpster(idNumber, regionIdNumber, maxCapacity, DumpsterType.CAN);
     	} else {
-    		dumpster = new Dumpster(idNumber, maxCapacity, DumpsterType.STATION);
+    		dumpster = new Dumpster(idNumber, regionIdNumber, maxCapacity, DumpsterType.STATION);
     	}
     }
     

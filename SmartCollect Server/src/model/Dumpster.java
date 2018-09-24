@@ -6,30 +6,26 @@ public class Dumpster implements Serializable {
 	private static final long serialVersionUID = 5955008319878533125L;
 	
 	private int idNumber;
+	private int regionIdNumber;
 	private double trashQuantity, maxCapacity;
 	private DumpsterType type;
 	
 	public Dumpster(int idNumber) {
 		this.idNumber = idNumber;
+		this.regionIdNumber = -1;
 		this.trashQuantity = -1;
 		this.maxCapacity = -1;
 		this.type = DumpsterType.UNKNOW;
 	}
 	
-	public Dumpster(int idNumber, double maxCapacity, DumpsterType type) { 
+	public Dumpster(int idNumber, int regionIdNumber, double trashQuantity, double maxCapacity, DumpsterType type) { 
 		this.idNumber = idNumber;
-		this.trashQuantity = 0;
-		this.maxCapacity = maxCapacity;
-		this.type = type;
-	}
-	
-	public Dumpster(int idNumber, double trashQuantity, double maxCapacity, DumpsterType type) { 
-		this.idNumber = idNumber;
+		this.regionIdNumber = regionIdNumber;
 		this.trashQuantity = trashQuantity;
 		this.maxCapacity = maxCapacity;
 		this.type = type;
 	}
-	
+
 	public void setTrashQuantity(double trashQuantity) {
 		this.trashQuantity = trashQuantity;
 	}
@@ -38,6 +34,10 @@ public class Dumpster implements Serializable {
 		return idNumber;		
 	}
 	
+	public int getRegionIdNumber() {
+		return regionIdNumber;
+	}
+
 	public double getTrashQuantity() {
 		return trashQuantity;		
 	}

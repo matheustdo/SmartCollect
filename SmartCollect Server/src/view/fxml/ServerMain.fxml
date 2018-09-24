@@ -17,7 +17,7 @@
    <children>
       <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
          <children>
-            <GridPane prefHeight="470.0" prefWidth="240.0" HBox.hgrow="NEVER">
+            <GridPane prefHeight="470.0" prefWidth="277.0" HBox.hgrow="NEVER">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
@@ -28,7 +28,7 @@
                <children>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <TitledPane animated="false" collapsible="false" layoutX="16.0" layoutY="18.0" prefHeight="169.0" prefWidth="231.0" text="Server Info" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
+                        <TitledPane animated="false" collapsible="false" layoutX="16.0" layoutY="18.0" prefHeight="169.0" prefWidth="231.0" text="Server Info" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
                            <content>
                               <AnchorPane prefHeight="143.0" prefWidth="201.0">
                                  <children>
@@ -58,10 +58,11 @@
                                        <children>
                                           <TableView fx:id="dumpstersTableView" prefHeight="270.0" prefWidth="123.0" scaleShape="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
-                                              <TableColumn fx:id="dumpstersIdColumn" editable="false" prefWidth="27.0" resizable="false" sortable="false" text="ID" />
-                                              <TableColumn fx:id="dumpstersTypeColumn" editable="false" prefWidth="51.0" resizable="false" sortable="false" text="Type" />
-                                                <TableColumn fx:id="dumpstersLevelColumn" editable="false" prefWidth="41.0" resizable="false" sortable="false" text="Level" />
-                                                <TableColumn fx:id="dumpstersQuantityColumn" editable="false" prefWidth="59.0" resizable="false" sortable="false" text="Quantity" />
+                                              <TableColumn fx:id="dumpstersIdColumn" editable="false" prefWidth="26.0" resizable="false" sortable="false" text="ID" />
+                                                <TableColumn fx:id="dumpstersRegionColumn" editable="false" prefWidth="46.0" sortable="false" text="Region" />
+                                              <TableColumn fx:id="dumpstersTypeColumn" editable="false" prefWidth="47.0" resizable="false" sortable="false" text="Type" />
+                                                <TableColumn fx:id="dumpstersLevelColumn" editable="false" prefWidth="42.0" resizable="false" sortable="false" text="Level" />
+                                                <TableColumn fx:id="dumpstersQuantityColumn" editable="false" prefWidth="54.0" resizable="false" sortable="false" text="Quantity" />
                                                 <TableColumn fx:id="dumpstersCapacityColumn" editable="false" prefWidth="56.0" resizable="false" sortable="false" text="Capacity" />
                                             </columns>
                                              <columnResizePolicy>
@@ -74,13 +75,14 @@
                             </Tab>
                             <Tab closable="false" text="Drivers">
                               <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="129.0">
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="269.0" prefWidth="248.0">
                                        <children>
                                           <TableView fx:id="driversTableView" prefHeight="270.0" prefWidth="123.0" scaleShape="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <columns>
                                                 <TableColumn fx:id="driversIdColumn" editable="false" prefWidth="27.0" resizable="false" sortable="false" text="ID" />
-                                                <TableColumn fx:id="driversPositionColumn" editable="false" prefWidth="67.0" resizable="false" sortable="false" text="Position" />
-                                                <TableColumn fx:id="driversRouteColumn" editable="false" prefWidth="140.0" resizable="false" sortable="false" text="Route" />
+                                                <TableColumn fx:id="driversRegionColumn" editable="false" prefWidth="51.0" sortable="false" text="Region" />
+                                                <TableColumn fx:id="driversPositionColumn" editable="false" prefWidth="59.0" resizable="false" sortable="false" text="Position" />
+                                                <TableColumn fx:id="driversRouteColumn" editable="false" prefWidth="134.0" resizable="false" sortable="false" text="Route" />
                                              </columns>
                                              <columnResizePolicy>
                                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
