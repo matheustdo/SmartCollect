@@ -6,7 +6,7 @@ import java.util.Observer;
 
 import util.TCPClient;
 
-public class DriverController implements Observer {
+public class DriverController extends Observable implements Observer {
 	private TCPClient runnableTcpClient;
 	private String route;
 	
@@ -20,11 +20,13 @@ public class DriverController implements Observer {
 	public String getRoute() {		
 		return route;
 	}
-
+	
 	@Override
 	public void update(Observable o, Object arg) {
 		if(o instanceof TCPClient) {
 			route = ((TCPClient) o).getObjReceived().toString();
+			setChanged();
+			notifyObservers();
 		}
 	}
 }

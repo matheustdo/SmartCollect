@@ -16,15 +16,13 @@ public class TCPClient extends Observable implements Runnable {
 	}
 	
 	public void run() {
-		while(!socket.isClosed()) {
-			try {
-				ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-				objReceived = ois.readObject();
-				setChanged();
-				notifyObservers();
-			} catch (IOException | ClassNotFoundException e) {
-				e.printStackTrace();
-			}
+		try {
+			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+			objReceived = ois.readObject();
+			setChanged();
+			notifyObservers();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
 		}
 	}
 

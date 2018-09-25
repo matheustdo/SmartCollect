@@ -16,70 +16,76 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 
-public class DriverMainFxmlController implements Initializable {
-	 	@FXML
-	    private TextField driverIdTextField;
+public class DriverMainFxmlController implements Initializable, Observer {
+	@FXML
+    private TextField serverIpTextField;
 
-	    @FXML
-	    private TextField driverPosTextField;
+    @FXML
+    private TextField serverPortTextField;
+    
+ 	@FXML
+    private TextField driverIdTextField;
 
-	    @FXML
-	    private Button turnOnButton;
+    @FXML
+    private TextField driverPosTextField;
 
-	    @FXML
-	    private Label statusTextField;
+    @FXML
+    private Button turnOnButton;
 
-	    @FXML
-	    private Label nextDumpsterLabel;
+    @FXML
+    private Label statusTextField;
 
-	    @FXML
-	    private Label routeRestLabel;
-	    
-	    private DriverController driverController = new DriverController();
-	    
-	    @Override
-	    public void initialize(URL arg0, ResourceBundle arg1) {
-	    	statusTextField.setTextFill(Color.DARKRED);	
-	    }
-	    
-	    @FXML
-	    void turnOnButtonAction(ActionEvent event) throws InterruptedException, IOException {
-	    	if(statusTextField.getText().equals("OFFLINE")) {
-		    	driverController.turnClientOn(4065, "localhost");
-		    	statusTextField.setText("ONLINE");
-		    	statusTextField.setTextFill(Color.DARKGREEN);
-		    	turnOnButton.setText("Update position");
-		    	driverIdTextField.setDisable(true);		    	
+    @FXML
+    private Label nextDumpsterLabel;
+
+    @FXML
+    private Label routeRestLabel;
+    
+    private DriverController driverController = new DriverController();
+    
+    @Override
+    public void initialize(URL arg0, ResourceBundle arg1) {
+    	statusTextField.setTextFill(Color.DARKRED);	
+    	driverController.addObserver(this);
+    }
+    
+    @FXML
+    void turnOnButtonAction(ActionEvent event) throws InterruptedException, IOException {
+    	if(statusTextField.getText().equals("OFFLINE")) {
+	    	driverController.turnClientOn(Integer.parseInt(serverPortTextField.getText()), serverIpTextField.getText());	    	
+	    	statusTextField.setText("ONLINE");
+	    	statusTextField.setTextFill(Color.DARKGREEN);
+	    	turnOnButton.setText("Update position");
+	    	driverIdTextField.setDisable(true);		    	
+	    	serverIpTextField.setDisable(true);
+	    	serverPortTextField.setDisable(true);
+    	}
+    }
+    
+	private void generateRoute() {
+		if(driverController.getRoute() != null) {
+			StringTokenizer st = new StringTokenizer(driverController.getRoute());   	
+			routeRestLabel.setText("");
+			
+	    	if(st.hasMoreTokens()) {
+				nextDumpsterLabel.setText(st.nextToken());
 	    	}
-	    	pageUpdater();
-	    }
-	    
-		private void pageUpdater() {		
-			new Thread(new Runnable() {
-				public void run() {
-					while(true) {
-						Platform.runLater(new Runnable() {
-							@Override
-							public void run() {
-								generateRoute();
-							}
-						});
-					}					
-				}
-			}).start();
+	    	
+	    	while(st.hasMoreTokens()) {
+				routeRestLabel.setText(routeRestLabel.getText() + "-> " + st.nextToken() + " ");		
+	    	}
 		}
-		
-		private void generateRoute() {
-			if(driverController.getRoute() != null) {
-				StringTokenizer st = new StringTokenizer(driverController.getRoute());
-		    	nextDumpsterLabel.setText("");
-		    	routeRestLabel.setText("");
-		    	if(st.hasMoreTokens()) {
-		    		nextDumpsterLabel.setText(st.nextToken());
-		    	}
-		    	while(st.hasMoreTokens()) {
-		    		routeRestLabel.setText(routeRestLabel.getText() + "-> " + st.nextToken() + " ");
-		    	}
-			}
-	    }
+    }
+
+	@Override
+	public void update(Observable o, Object arg) {
+		if(o instanceof DriverController) {
+			Platform.runLater(new Runnable() {
+    		    @Override
+    		    public void run() {
+    		    	generateRoute();
+    		    }
+    		});
+		}		
+	}
 }
