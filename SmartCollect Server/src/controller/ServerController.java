@@ -54,13 +54,6 @@ public class ServerController implements Observer {
 		Thread threadUDPServer =  new Thread(runnableUdpServer);
 		threadUDPServer.start();
 		runnableUdpServer.addObserver(this);
-		new Thread() {
-			public void run() {
-				while(true) {
-					System.out.println(getRoute(3, 3));
-				}
-			}
-		}.start();
 	}
 	
 	public void turnTcpServerOn() throws IOException {
@@ -68,6 +61,7 @@ public class ServerController implements Observer {
 		Thread threadTCPServer =  new Thread(runnableTcpServer);
 		threadTCPServer.start();
 		runnableTcpServer.addObserver(this);
+		runnableTcpServer.setOutObj(getRoute(3,1));
 	}
 	
 	public String getServerIp() {		

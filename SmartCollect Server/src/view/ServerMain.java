@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class ServerMain extends Application {
@@ -24,6 +25,7 @@ public class ServerMain extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.setMinWidth(710);
 		primaryStage.setMinHeight(520);
+		primaryStage.getIcons().add(new Image("/assets/icon.png"));
 		primaryStage.show();
 		
 		primaryStage.setOnCloseRequest(event -> {

@@ -2,9 +2,12 @@ package controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -46,20 +49,37 @@ public class DriverMainFxmlController implements Initializable {
 		    	statusTextField.setText("ONLINE");
 		    	statusTextField.setTextFill(Color.DARKGREEN);
 		    	turnOnButton.setText("Update position");
-		    	driverIdTextField.setDisable(true);
+		    	driverIdTextField.setDisable(true);		    	
 	    	}
-	    	generateRoute();
+	    	pageUpdater();
 	    }
 	    
-	    private void generateRoute() {
-	    	StringTokenizer st = new StringTokenizer(driverController.getRoute());
-	    	nextDumpsterLabel.setText("");
-	    	routeRestLabel.setText("");
-	    	if(st.hasMoreTokens()) {
-	    		nextDumpsterLabel.setText(st.nextToken());
-	    	}
-	    	while(st.hasMoreTokens()) {
-	    		routeRestLabel.setText(routeRestLabel.getText() + "-> " + st.nextToken() + " ");
-	    	}
+		private void pageUpdater() {		
+			new Thread(new Runnable() {
+				public void run() {
+					while(true) {
+						Platform.runLater(new Runnable() {
+							@Override
+							public void run() {
+								generateRoute();
+							}
+						});
+					}					
+				}
+			}).start();
+		}
+		
+		private void generateRoute() {
+			if(driverController.getRoute() != null) {
+				StringTokenizer st = new StringTokenizer(driverController.getRoute());
+		    	nextDumpsterLabel.setText("");
+		    	routeRestLabel.setText("");
+		    	if(st.hasMoreTokens()) {
+		    		nextDumpsterLabel.setText(st.nextToken());
+		    	}
+		    	while(st.hasMoreTokens()) {
+		    		routeRestLabel.setText(routeRestLabel.getText() + "-> " + st.nextToken() + " ");
+		    	}
+			}
 	    }
 }

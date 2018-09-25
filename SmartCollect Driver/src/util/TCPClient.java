@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.Observable;
 
-public class TCPClient implements Runnable {
+public class TCPClient extends Observable implements Runnable {
 	private Object objReceived;
 	private final Socket socket;
 	
@@ -14,12 +15,13 @@ public class TCPClient implements Runnable {
 		objReceived = new Object();
 	}
 	
-	@Override
 	public void run() {
 		while(!socket.isClosed()) {
 			try {
 				ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 				objReceived = ois.readObject();
+				setChanged();
+				notifyObservers();
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}

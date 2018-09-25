@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class DumpsterMain extends Application {
@@ -20,6 +21,7 @@ public class DumpsterMain extends Application {
 		primaryStage.setTitle("SmartColect Dumpster");
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
+		primaryStage.getIcons().add(new Image("/assets/icon.png"));
 		primaryStage.show();
 		
 		primaryStage.setOnCloseRequest(event -> {
