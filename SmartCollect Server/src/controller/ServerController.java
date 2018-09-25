@@ -54,10 +54,17 @@ public class ServerController implements Observer {
 		Thread threadUDPServer =  new Thread(runnableUdpServer);
 		threadUDPServer.start();
 		runnableUdpServer.addObserver(this);
+		new Thread() {
+			public void run() {
+				while(true) {
+					System.out.println(getRoute(3, 3));
+				}
+			}
+		}.start();
 	}
 	
 	public void turnTcpServerOn() throws IOException {
-		runnableTcpServer = new TCPServer(getRoute(3), serverPort, serverIp);
+		runnableTcpServer = new TCPServer(serverPort, serverIp);
 		Thread threadTCPServer =  new Thread(runnableTcpServer);
 		threadTCPServer.start();
 		runnableTcpServer.addObserver(this);
@@ -232,15 +239,25 @@ public class ServerController implements Observer {
         bw.close();
 	}
 	
-	public String getRoute(int pos) {
+	public String getRoute(int pos, int region) {
 		List<Dumpster> dumpstersList = getDumpstersList();
+		List<Dumpster> restDumpstersList = new ArrayList<Dumpster>();
 		String route = new String();
-		int closer = 0, closerIndex = 0, before = pos;
+		int closer = 0, closerIndex = 0, before = pos, lastPrioritized = pos;
+		
+		/* Removes all dumpsters outside the region */
+		for(int x = 0; x < dumpstersList.size(); x++) {		
+			if(dumpstersList.get(x).getRegionIdNumber() != region) {
+				dumpstersList.remove(x);
+				x--;
+			}
+		}
 		
 		if(!dumpstersList.isEmpty()) {
 			closer =  dumpstersList.get(0).getIdNumber();
 		}
 		
+		/* Plans the route to the priority dumps */
 		while(!dumpstersList.isEmpty()) {
 			for(int j = 0; j < dumpstersList.size(); j++) {
 				Dumpster dumpster = dumpstersList.get(j);
@@ -251,21 +268,55 @@ public class ServerController implements Observer {
 					}
 				}
 			}
-			
-			/*if(closerIndex >= 0) {
-				dumpstersList.remove(closerIndex);
-			}*/
-			
-			before = closer;
-			if(dumpstersList.get(closerIndex).getType().equals(DumpsterType.CAN)) {
-				route += closer + " ";
-			}	
-			dumpstersList.remove(closerIndex);
 			if(!dumpstersList.isEmpty()) {
-				closer = dumpstersList.get(0).getIdNumber();
-				closerIndex = 0;
+				Dumpster closerDumpster = dumpstersList.get(closerIndex);
+				before = closer;
+				if(closerDumpster.getType().equals(DumpsterType.CAN) && closerDumpster.getTrashPercentage() >= minimunTrashPercentage) {
+					route += closer + " ";
+					lastPrioritized = closer;
+				} else {
+					restDumpstersList.add(closerDumpster);
+				}
+				
+				dumpstersList.remove(closerIndex);
+				if(!dumpstersList.isEmpty()) {
+					closer = dumpstersList.get(0).getIdNumber();
+					closerIndex = 0;
+				}
 			}
 		}
+		
+		if(!restDumpstersList.isEmpty()) {
+			before = lastPrioritized;
+			closer =  restDumpstersList.get(0).getIdNumber();
+			closerIndex = 0;
+		}		
+
+		/* Plans the route to the unpriotirized dumps */
+		while(!restDumpstersList.isEmpty()) {
+			for(int j = 0; j < restDumpstersList.size(); j++) {
+				Dumpster dumpster = restDumpstersList.get(j);
+				if(dumpster.getType().equals(DumpsterType.CAN)) {
+					if(closer != getCloser(before, dumpster.getIdNumber(), closer)) {
+						closer = dumpster.getIdNumber();
+						closerIndex = j;
+					}
+				}		
+			}
+			if(!restDumpstersList.isEmpty()) {
+				Dumpster closerDumpster = restDumpstersList.get(closerIndex);
+				before = closer;
+				if(closerDumpster.getType().equals(DumpsterType.CAN)) {
+					route += closer + " ";
+				}
+				restDumpstersList.remove(closerIndex);
+				if(!restDumpstersList.isEmpty()) {
+					closer = restDumpstersList.get(0).getIdNumber();
+					closerIndex = 0;
+				}
+			}
+		}
+		
 		return route;		
 	}
 	

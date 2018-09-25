@@ -12,9 +12,9 @@ public class TCPServer extends Observable implements Runnable {
 	private Object outObj;
 	private ServerSocket serverSocket;
 	
-	public TCPServer(Object outObj, int serverPort, String serverIP) throws IOException {
+	public TCPServer(int serverPort, String serverIP) throws IOException {
 		this.inObj = new Object();
-		this.outObj = outObj;
+		this.outObj = new Object();
 		this.serverSocket = new ServerSocket(serverPort, 50, InetAddress.getByName(serverIP));
 	}
 	
