@@ -33,15 +33,17 @@
                               <AnchorPane prefHeight="143.0" prefWidth="201.0">
                                  <children>
                                     <Label layoutX="15.0" layoutY="14.0" text="Server IP:" />
-                                    <Label layoutX="15.0" layoutY="37.0" text="Port:" />
-                                    <Label layoutX="14.0" layoutY="60.0" text="Trash cans:" />
-                                    <Label layoutX="14.0" layoutY="83.0" text="Transfer stations:" />
-                                    <Label layoutX="14.0" layoutY="106.0" text="Drivers: " />
+                                    <Label layoutX="15.0" layoutY="31.0" text="UDP Server Port:" />
+                                    <Label layoutX="15.0" layoutY="69.0" text="Trash cans:" />
+                                    <Label layoutX="15.0" layoutY="88.0" text="Transfer stations:" />
+                                    <Label layoutX="15.0" layoutY="106.0" text="Drivers: " />
                                     <Label fx:id="ipNumberLabel" layoutX="70.0" layoutY="14.0" text="0000" />
-                                    <Label fx:id="portNumberLabel" layoutX="46.0" layoutY="37.0" text="0000" />
-                                    <Label fx:id="trashCansQuantityLabel" layoutX="78.0" layoutY="60.0" text="0000" />
-                                    <Label fx:id="transferStationsQuantityLabel" layoutX="110.0" layoutY="83.0" text="0000" />
-                                    <Label fx:id="driversQuantityLabel" layoutX="60.0" layoutY="106.0" text="0000" />
+                                    <Label fx:id="udpPortNumberLabel" layoutX="110.0" layoutY="31.0" text="0000" />
+                                    <Label fx:id="trashCansQuantityLabel" layoutX="79.0" layoutY="69.0" text="0000" />
+                                    <Label fx:id="transferStationsQuantityLabel" layoutX="111.0" layoutY="88.0" text="0000" />
+                                    <Label fx:id="driversQuantityLabel" layoutX="61.0" layoutY="106.0" text="0000" />
+                                    <Label layoutX="15.0" layoutY="50.0" text="TCP Server Port:" />
+                                    <Label fx:id="tcpPortNumberLabel" layoutX="108.0" layoutY="50.0" text="0000" />
                                  </children>
                               </AnchorPane>
                            </content>

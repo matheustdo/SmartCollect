@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
@@ -29,55 +30,67 @@ import model.DumpsterType;
 import util.TCPServer;
 import util.UDPServer;
 
-public class ServerController implements Observer {
-	private int serverPort,
+public class ServerController extends Observable implements Observer {
+	private int udpServerPort,
+				tcpServerPort,
 				trashCansQuantity,
 				transferStationsQuantity,
 				driversQuantity,
 				minimunTrashPercentage;
-	private String serverIp;
+	private String serverIp,
+				   lastMessage;
 	private UDPServer runnableUdpServer;
 	private TCPServer runnableTcpServer;
 	private Map<Integer, Dumpster> dumpsters;
 	private final static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
 	public ServerController() {
-		trashCansQuantity = 0;
-		transferStationsQuantity = 0;
-		driversQuantity = 0;
-		minimunTrashPercentage = 80;
-		dumpsters = new HashMap<Integer, Dumpster>();
+		this.serverIp = "localhost";
+		this.udpServerPort = 4065;
+		this.tcpServerPort = 4066;
+		this.trashCansQuantity = 0;
+		this.transferStationsQuantity = 0;
+		this.driversQuantity = 0;
+		this.minimunTrashPercentage = 80;
+		this.lastMessage = "";
+		this.dumpsters = new HashMap<Integer, Dumpster>();
 	}
 	
 	public void turnUdpServerOn() throws UnknownHostException, SocketException {
-		runnableUdpServer = new UDPServer(serverPort, serverIp);
+		runnableUdpServer = new UDPServer(udpServerPort, serverIp);
 		Thread threadUDPServer =  new Thread(runnableUdpServer);
 		threadUDPServer.start();
 		runnableUdpServer.addObserver(this);
 	}
 	
 	public void turnTcpServerOn() throws IOException {
-		runnableTcpServer = new TCPServer(serverPort, serverIp);
+		runnableTcpServer = new TCPServer(tcpServerPort, serverIp);
 		Thread threadTCPServer =  new Thread(runnableTcpServer);
 		threadTCPServer.start();
 		runnableTcpServer.addObserver(this);
-		runnableTcpServer.setOutObj(getRoute(3,1));
+	}
+	
+	public void updateDrivers() throws IOException {
+		
 	}
 	
 	public String getServerIp() {		
-		return ((UDPServer)runnableUdpServer).getDatagramSocket().getLocalAddress().getHostAddress();
+		return serverIp;
 	}
 	
-	public int getServerPort() {
-		return ((UDPServer)runnableUdpServer).getDatagramSocket().getLocalPort();
+	public int getUdpServerPort() {
+		return udpServerPort;
+	}
+	
+	public int getTcpServerPort() {
+		return tcpServerPort;
 	}
 	
 	public Map<Integer, Dumpster> getDumpsters() {
 		return dumpsters;
 	}
 	
-	private void createServerConfigFile(File file) throws IOException {
-		serverPort = 4065;
+	private void createServerConfigFile(File file) throws IOException {		
 		serverIp = "localhost";
 		
 		file.createNewFile();
@@ -85,8 +98,8 @@ public class ServerController implements Observer {
 		FileWriter fw = new FileWriter(file.getAbsoluteFile());
         BufferedWriter bw = new BufferedWriter(fw);
         bw.write("#SmartCollect server properties\r\n" + "server-ip: " + serverIp +
-        		 "\r\nserver-port: " + Integer.toString(serverPort) + "\r\nminimun-trash-percentage: " + 
-        		 minimunTrashPercentage);
+        		 "\r\nudp-server-port: " + Integer.toString(udpServerPort) + "\r\ntcp-server-port: " +
+        		 Integer.toString(tcpServerPort) + "\r\nminimun-trash-percentage: " + minimunTrashPercentage);
         bw.close();
         fw.close();
 	}
@@ -102,8 +115,10 @@ public class ServerController implements Observer {
             br.readLine();
             String ipLine = br.readLine().replaceAll(" ", "");
             serverIp = ipLine.replace("server-ip:", "");
-            String portLine = br.readLine().replaceAll(" ", "");
-            serverPort = Integer.parseInt(portLine.replace("server-port:", ""));
+            String udpPortLine = br.readLine().replaceAll(" ", "");
+            udpServerPort = Integer.parseInt(udpPortLine.replace("udp-server-port:", ""));
+            String tcpPortLine = br.readLine().replaceAll(" ", "");
+            tcpServerPort = Integer.parseInt(tcpPortLine.replace("tcp-server-port:", ""));
             String minimunTrashLine = br.readLine().replaceAll(" ", "");
             minimunTrashPercentage = Integer.parseInt(minimunTrashLine.replace("minimun-trash-percentage:", ""));
             br.close();
@@ -115,7 +130,11 @@ public class ServerController implements Observer {
 	public void update(Observable subject, Object arg1) {
 		if(subject instanceof UDPServer) {
 			if(((UDPServer) subject).getObj() instanceof Dumpster) {
-				dumpsters.put(((Dumpster)((UDPServer) subject).getObj()).getIdNumber(), ((Dumpster)((UDPServer) subject).getObj()));
+				Dumpster dumpster = (Dumpster)((UDPServer) subject).getObj();
+				dumpsters.put(((Dumpster)((UDPServer) subject).getObj()).getIdNumber(), dumpster);
+				this.lastMessage = "A " + dumpster.getTypeName() + " was created with ID " + dumpster.getIdNumber();
+				setChanged();
+				notifyObservers();
 			} else if (((UDPServer) subject).getObj() instanceof String){
 				String obj = (String) ((UDPServer) subject).getObj();
 				StringTokenizer st = new StringTokenizer(obj);
@@ -131,10 +150,20 @@ public class ServerController implements Observer {
 					dumpster = new Dumpster(id, regionId, trashQuantity, capacity, type);
 					dumpsters.put(id, dumpster);
 				} else {
-					dumpsters.put(id, new Dumpster(id));
+					dumpster = new Dumpster(id);
+					dumpsters.put(id, dumpster);
+					this.lastMessage = "Unknow dumpster was created with ID " + dumpster.getIdNumber() + " from ";
+					setChanged();
+					notifyObservers();
 				}				 
 			}			
-		}		
+		} else if (subject instanceof TCPServer) {
+			if(((TCPServer) subject).getInObj() instanceof Integer) {
+				int pos = (Integer) ((TCPServer) subject).getInObj();
+				String route = getRoute(pos, 0);
+				runnableTcpServer.setOutObj(route);
+			}
+		}
 	}
 	
 	public List<Dumpster> getDumpstersList() {
@@ -148,6 +177,10 @@ public class ServerController implements Observer {
 		return dumpstersList;		
 	}
 	
+	public String getLastMessage() {
+		return lastMessage;
+	}
+
 	public int getTrashCansQuantity() {
 		return trashCansQuantity;
 	}
@@ -239,13 +272,13 @@ public class ServerController implements Observer {
 		String route = new String();
 		int closer = 0, closerIndex = 0, before = pos, lastPrioritized = pos;
 		
-		/* Removes all dumpsters outside the region */
+		/* Removes all dumpsters outside the region 
 		for(int x = 0; x < dumpstersList.size(); x++) {		
 			if(dumpstersList.get(x).getRegionIdNumber() != region) {
 				dumpstersList.remove(x);
 				x--;
 			}
-		}
+		}*/
 		
 		if(!dumpstersList.isEmpty()) {
 			closer =  dumpstersList.get(0).getIdNumber();
@@ -301,7 +334,7 @@ public class ServerController implements Observer {
 				Dumpster closerDumpster = restDumpstersList.get(closerIndex);
 				before = closer;
 				if(closerDumpster.getType().equals(DumpsterType.CAN)) {
-					route += closer + " ";
+					route += "." + closer + " ";
 				}
 				restDumpstersList.remove(closerIndex);
 				if(!restDumpstersList.isEmpty()) {

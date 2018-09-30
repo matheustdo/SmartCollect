@@ -10,8 +10,8 @@ public class DriverController extends Observable implements Observer {
 	private TCPClient runnableTcpClient;
 	private String route;
 	
-	public void turnClientOn(int serverPort, String serverIP) throws InterruptedException, IOException {
-		runnableTcpClient = new TCPClient(serverPort, serverIP);
+	public void turnClientOn(int serverPort, String serverIP, int position) throws InterruptedException, IOException {
+		runnableTcpClient = new TCPClient(serverPort, serverIP, position);
 		Thread threadClient =  new Thread(runnableTcpClient);		
 		threadClient.start();	
 		runnableTcpClient.addObserver(this);

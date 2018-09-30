@@ -52,13 +52,17 @@ public class DriverMainFxmlController implements Initializable, Observer {
     @FXML
     void turnOnButtonAction(ActionEvent event) throws InterruptedException, IOException {
     	if(statusTextField.getText().equals("OFFLINE")) {
-	    	driverController.turnClientOn(Integer.parseInt(serverPortTextField.getText()), serverIpTextField.getText());	    	
+	    	driverController.turnClientOn(Integer.parseInt(serverPortTextField.getText()), serverIpTextField.getText(), 
+	    								  Integer.parseInt(driverPosTextField.getText()));	    	
 	    	statusTextField.setText("ONLINE");
 	    	statusTextField.setTextFill(Color.DARKGREEN);
 	    	turnOnButton.setText("Update position");
 	    	driverIdTextField.setDisable(true);		    	
 	    	serverIpTextField.setDisable(true);
 	    	serverPortTextField.setDisable(true);
+    	} else {
+    		driverController.turnClientOn(Integer.parseInt(serverPortTextField.getText()), serverIpTextField.getText(), 
+    		Integer.parseInt(driverPosTextField.getText()));
     	}
     }
     

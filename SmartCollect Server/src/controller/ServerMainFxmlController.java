@@ -3,6 +3,8 @@ package controller;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
@@ -19,13 +21,17 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import model.Dumpster;
 import util.Log;
+import util.UDPServer;
 
-public class ServerMainFxmlController implements Initializable {
+public class ServerMainFxmlController implements Initializable, Observer {
 	@FXML
     private Label ipNumberLabel;
 
     @FXML
-    private Label portNumberLabel;
+    private Label udpPortNumberLabel;
+    
+    @FXML
+    private Label tcpPortNumberLabel;
 
     @FXML
     private Label trashCansQuantityLabel;
@@ -84,6 +90,7 @@ public class ServerMainFxmlController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		try {			
+			serverController.addObserver(this);
 			serverController.loadServerData();
 			logTextArea.appendText(Log.server("Loading properties" + "\n"));
 			serverController.readServerConfigFile();
@@ -91,13 +98,13 @@ public class ServerMainFxmlController implements Initializable {
 			logTextArea.appendText(Log.server("Starting UDP server" + "\n"));
 			serverController.turnUdpServerOn();			
 			logTextArea.appendText(Log.server("UDP server has initialized at " + 
-					   serverController.getServerIp() + 
-					   serverController.getServerPort()) + "\n");
+					   serverController.getServerIp() + ":" +
+					   serverController.getUdpServerPort()) + "\n");
 			logTextArea.appendText(Log.server("Starting TCP server" + "\n"));
 			serverController.turnTcpServerOn();	
 			logTextArea.appendText(Log.server("TCP server has initialized at " + 
-					   serverController.getServerIp() + 
-					   serverController.getServerPort()) + "\n");			
+					   serverController.getServerIp() + ":" +
+					   serverController.getTcpServerPort()) + "\n");			
 		} catch (IOException | ClassNotFoundException e) {
 			logTextArea.appendText(Log.serverError(printStackTrace(e) + "\n"));
 			e.printStackTrace();
@@ -121,15 +128,21 @@ public class ServerMainFxmlController implements Initializable {
 		new Thread(new Runnable() { 
             private ObservableList<Dumpster> ol;
 
-			public void run() {    
-            	ipNumberLabel.setText(serverController.getServerIp());
-        		portNumberLabel.setText(Integer.toString(serverController.getServerPort()));
-            	dumpstersIdColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getIdNumber()).asObject());
-            	dumpstersRegionColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getRegionIdNumber()).asObject());
-            	dumpstersTypeColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTypeName()));
-            	dumpstersLevelColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashPercentage()) + "%"));
-            	dumpstersQuantityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashQuantity()) + "l"));
-            	dumpstersCapacityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getMaxCapacity())+ "l"));
+			public void run() {   
+				Platform.runLater(new Runnable() {
+        		    @Override
+        		    public void run() {
+		            	ipNumberLabel.setText(serverController.getServerIp());
+		        		udpPortNumberLabel.setText(Integer.toString(serverController.getUdpServerPort()));
+		        		tcpPortNumberLabel.setText(Integer.toString(serverController.getTcpServerPort()));
+		            	dumpstersIdColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getIdNumber()).asObject());            	
+		            	dumpstersRegionColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getRegionIdNumber()).asObject());
+		            	dumpstersTypeColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTypeName()));
+		            	dumpstersLevelColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashPercentage()) + "%"));
+		            	dumpstersQuantityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashQuantity()) + "l"));
+		            	dumpstersCapacityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getMaxCapacity())+ "l"));
+        		    }
+    		    });
             	while(true) {    
             		serverController.updateDumpstersCounters();
             		Platform.runLater(new Runnable() {
@@ -167,5 +180,17 @@ public class ServerMainFxmlController implements Initializable {
 		}
 		
 		return stackTrace;		
+	}
+	
+	@Override
+	public void update(Observable subject, Object arg1) {
+		if(subject instanceof ServerController) {
+			Platform.runLater(new Runnable() {
+    		    @Override
+    		    public void run() {
+            		logTextArea.appendText(Log.server(serverController.getLastMessage() + "\n"));;
+    		    }
+    		});     
+		}
 	}
 }

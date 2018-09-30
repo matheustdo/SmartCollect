@@ -68,7 +68,7 @@
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <children>
-                                          <TextField fx:id="serverPortTextField" promptText="Ex: 4065" text="4065" />
+                                          <TextField fx:id="serverPortTextField" promptText="Ex: 4066" text="4066" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
@@ -106,7 +106,7 @@
                      <items>
                         <AnchorPane prefHeight="141.0" prefWidth="300.0">
                            <children>
-                              <Label fx:id="nextDumpsterLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="55.0" prefHeight="88.0" prefWidth="89.0" text="--" textAlignment="RIGHT" textFill="#f20000">
+                              <Label fx:id="nextDumpsterLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="55.0" prefHeight="105.0" prefWidth="96.0" text="--" textAlignment="RIGHT" textFill="#f20000">
                                  <font>
                                     <Font name="System Bold Italic" size="72.0" />
                                  </font>
@@ -116,7 +116,7 @@
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="routeRestLabel" layoutX="108.0" layoutY="64.0" prefHeight="88.0" prefWidth="182.0" textFill="#c60000" wrapText="true">
+                              <Label fx:id="routeRestLabel" layoutX="111.0" layoutY="64.0" prefHeight="88.0" prefWidth="179.0" textFill="#c60000" wrapText="true">
                                  <font>
                                     <Font name="System Bold" size="18.0" />
                                  </font>
