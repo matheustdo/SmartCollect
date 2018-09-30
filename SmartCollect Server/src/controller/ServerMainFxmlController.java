@@ -19,9 +19,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import model.Driver;
 import model.Dumpster;
 import util.Log;
-import util.UDPServer;
 
 public class ServerMainFxmlController implements Initializable, Observer {
 	@FXML
@@ -67,19 +67,16 @@ public class ServerMainFxmlController implements Initializable, Observer {
     private TableColumn<Dumpster, String> dumpstersCapacityColumn;
     
     @FXML
-    private TableView<?> driversTableView;
+    private TableView<Driver> driversTableView;
 
     @FXML
-    private TableColumn<?, ?> driversIdColumn;
-    
-    @FXML
-    private TableColumn<?, ?> driversRegionColumn;
+    private TableColumn<Driver, Integer> driversIdColumn;
 
     @FXML
-    private TableColumn<?, ?> driversPositionColumn;
+    private TableColumn<Driver, Integer> driversPositionColumn;
 
     @FXML
-    private TableColumn<?, ?> driversRouteColumn;
+    private TableColumn<Driver, String> driversRouteColumn;
 
     @FXML
     private TextArea logTextArea;
@@ -126,23 +123,22 @@ public class ServerMainFxmlController implements Initializable, Observer {
 	
 	private void pageUpdater() {		
 		new Thread(new Runnable() { 
-            private ObservableList<Dumpster> ol;
+            private ObservableList<Dumpster> dumpstersOl;
+            private ObservableList<Driver> driversOl;
 
-			public void run() {   
-				Platform.runLater(new Runnable() {
-        		    @Override
-        		    public void run() {
-		            	ipNumberLabel.setText(serverController.getServerIp());
-		        		udpPortNumberLabel.setText(Integer.toString(serverController.getUdpServerPort()));
-		        		tcpPortNumberLabel.setText(Integer.toString(serverController.getTcpServerPort()));
-		            	dumpstersIdColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getIdNumber()).asObject());            	
-		            	dumpstersRegionColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getRegionIdNumber()).asObject());
-		            	dumpstersTypeColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTypeName()));
-		            	dumpstersLevelColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashPercentage()) + "%"));
-		            	dumpstersQuantityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashQuantity()) + "l"));
-		            	dumpstersCapacityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getMaxCapacity())+ "l"));
-        		    }
-    		    });
+			public void run() {
+	            	ipNumberLabel.setText(serverController.getServerIp());
+	        		udpPortNumberLabel.setText(Integer.toString(serverController.getUdpServerPort()));
+	        		tcpPortNumberLabel.setText(Integer.toString(serverController.getTcpServerPort()));
+	            	dumpstersIdColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getIdNumber()).asObject());            	
+	            	dumpstersRegionColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getRegionIdNumber()).asObject());
+	            	dumpstersTypeColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTypeName()));
+	            	dumpstersLevelColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashPercentage()) + "%"));
+	            	dumpstersQuantityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashQuantity()) + "l"));
+	            	dumpstersCapacityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getMaxCapacity())+ "l"));
+	            	driversIdColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getId()).asObject());
+	            	driversPositionColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getPos()).asObject());
+	            	driversRouteColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getRoute()));
             	while(true) {    
             		serverController.updateDumpstersCounters();
             		Platform.runLater(new Runnable() {
@@ -154,8 +150,10 @@ public class ServerMainFxmlController implements Initializable, Observer {
             		    }
             		});            		     		
             		try {
-            			ol = FXCollections.observableArrayList(serverController.getDumpstersList());
-						dumpstersTableView.setItems(ol);						
+            			dumpstersOl = FXCollections.observableArrayList(serverController.getDumpstersList());
+						dumpstersTableView.setItems(dumpstersOl);		
+						driversOl = FXCollections.observableArrayList(serverController.getDriversList());
+						driversTableView.setItems(driversOl);
 						Thread.sleep(500);
 					} catch (InterruptedException e) {
 						e.printStackTrace();

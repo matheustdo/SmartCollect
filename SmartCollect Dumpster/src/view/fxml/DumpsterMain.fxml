@@ -135,7 +135,7 @@
                                                 </HBox>
                                                 <HBox alignment="CENTER" layoutX="102.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                                    <children>
-                                                      <TextField fx:id="regionIdTextField" prefHeight="25.0" prefWidth="135.0" promptText="Ex: 4" />
+                                                      <TextField fx:id="regionIdTextField" disable="true" prefHeight="25.0" prefWidth="135.0" promptText="Ex: 4" text="1" />
                                                    </children>
                                                 </HBox>
                                                 <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5">

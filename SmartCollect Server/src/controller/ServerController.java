@@ -10,7 +10,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
@@ -25,6 +24,7 @@ import java.util.Observer;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import model.Driver;
 import model.Dumpster;
 import model.DumpsterType;
 import util.TCPServer;
@@ -35,13 +35,13 @@ public class ServerController extends Observable implements Observer {
 				tcpServerPort,
 				trashCansQuantity,
 				transferStationsQuantity,
-				driversQuantity,
 				minimunTrashPercentage;
 	private String serverIp,
 				   lastMessage;
 	private UDPServer runnableUdpServer;
 	private TCPServer runnableTcpServer;
 	private Map<Integer, Dumpster> dumpsters;
+	private Map<Integer, Driver> drivers;
 	private final static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
 	public ServerController() {
@@ -50,10 +50,10 @@ public class ServerController extends Observable implements Observer {
 		this.tcpServerPort = 4066;
 		this.trashCansQuantity = 0;
 		this.transferStationsQuantity = 0;
-		this.driversQuantity = 0;
 		this.minimunTrashPercentage = 80;
 		this.lastMessage = "";
 		this.dumpsters = new HashMap<Integer, Dumpster>();
+		this.drivers = new HashMap<Integer, Driver>();
 	}
 	
 	public void turnUdpServerOn() throws UnknownHostException, SocketException {
@@ -152,16 +152,26 @@ public class ServerController extends Observable implements Observer {
 				} else {
 					dumpster = new Dumpster(id);
 					dumpsters.put(id, dumpster);
-					this.lastMessage = "Unknow dumpster was created with ID " + dumpster.getIdNumber() + " from ";
+					this.lastMessage = "Unknow dumpster was created with ID " + dumpster.getIdNumber();
 					setChanged();
 					notifyObservers();
 				}				 
 			}			
 		} else if (subject instanceof TCPServer) {
-			if(((TCPServer) subject).getInObj() instanceof Integer) {
-				int pos = (Integer) ((TCPServer) subject).getInObj();
-				String route = getRoute(pos, 0);
+			if(((TCPServer) subject).getInObj() instanceof String) {			
+				StringTokenizer st = new StringTokenizer((String) ((TCPServer) subject).getInObj());
+				int id = Integer.parseInt(st.nextToken());
+				int pos = Integer.parseInt(st.nextToken());
+				String route = getRoute(pos, id);
 				runnableTcpServer.setOutObj(route);
+				
+				if (!drivers.containsKey(id)) {
+					this.lastMessage = "A driver was created at region id " + id;
+					setChanged();
+					notifyObservers();
+				}
+				
+				drivers.put(id, new Driver(id, pos, route));
 			}
 		}
 	}
@@ -177,6 +187,17 @@ public class ServerController extends Observable implements Observer {
 		return dumpstersList;		
 	}
 	
+	public List<Driver> getDriversList() {
+		Set<Integer> keys = drivers.keySet();
+		List<Driver> driversList = new ArrayList<Driver>();
+		for(Integer key : keys) {
+			if(key != null) {
+				driversList.add(drivers.get(key));
+			}
+		}
+		return driversList;
+	}
+	
 	public String getLastMessage() {
 		return lastMessage;
 	}
@@ -190,7 +211,7 @@ public class ServerController extends Observable implements Observer {
 	}
 	
 	public int getDriversQuantity() {
-		return 0;
+		return drivers.size();
 	}
 	
 	public void updateDumpstersCounters() { 

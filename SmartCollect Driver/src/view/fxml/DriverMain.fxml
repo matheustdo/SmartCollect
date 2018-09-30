@@ -53,7 +53,7 @@
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
                                        <children>
-                                          <Label text="ID Number:" />
+                                          <Label text="ID Number (Region):" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="3">
@@ -73,12 +73,12 @@
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                        <children>
-                                          <TextField fx:id="driverIdTextField" promptText="Ex: 7" />
+                                          <TextField fx:id="driverIdTextField" disable="true" promptText="Ex: 7" text="1" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                        <children>
-                                          <TextField fx:id="driverPosTextField" promptText="Ex: 42" />
+                                          <TextField fx:id="driverPosTextField" promptText="Ex: 42" text="0" />
                                        </children>
                                     </HBox>
                                     <Button fx:id="turnOnButton" mnemonicParsing="false" onAction="#turnOnButtonAction" prefHeight="25.0" prefWidth="163.0" text="Turn on" GridPane.columnIndex="1" GridPane.rowIndex="4" />
