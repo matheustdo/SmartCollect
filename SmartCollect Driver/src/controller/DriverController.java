@@ -29,4 +29,8 @@ public class DriverController extends Observable implements Observer {
 			notifyObservers();
 		}
 	}
+	
+	public void setTcpOutObject(Object obj) {
+		runnableTcpClient.setOutObj(obj);
+	}
 }

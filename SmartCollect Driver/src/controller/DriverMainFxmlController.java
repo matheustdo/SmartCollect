@@ -61,8 +61,7 @@ public class DriverMainFxmlController implements Initializable, Observer {
 	    	serverIpTextField.setDisable(true);
 	    	serverPortTextField.setDisable(true);
     	} else {
-    		driverController.turnClientOn(Integer.parseInt(serverPortTextField.getText()), serverIpTextField.getText(), 
-    		Integer.parseInt(driverPosTextField.getText()));
+    		driverController.setTcpOutObject(Integer.parseInt(driverPosTextField.getText()));
     	}
     }
     

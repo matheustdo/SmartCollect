@@ -41,4 +41,8 @@ public class TCPClient extends Observable implements Runnable {
 	public Object getObjReceived() {
 		return inObj;
 	}
+
+	public void setOutObj(Object outObj) {
+		this.outObj = outObj;
+	}
 }
