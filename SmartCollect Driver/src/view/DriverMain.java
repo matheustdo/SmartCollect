@@ -7,6 +7,9 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+/**
+ * @author Matheus Teles
+ */
 public class DriverMain extends Application {
 	public static void main(String[] args) {
 		launch(args);

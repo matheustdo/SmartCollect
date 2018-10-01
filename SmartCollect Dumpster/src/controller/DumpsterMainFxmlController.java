@@ -18,6 +18,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
+/**
+ * @author Matheus Teles
+ */
 public class DumpsterMainFxmlController implements Initializable {
 	@FXML
     private Label levelLabel;
@@ -78,6 +81,9 @@ public class DumpsterMainFxmlController implements Initializable {
 		quantityLabel.setText("0" + "/" + capacityTextField.getText() + " l");
     }
 	
+	/**
+	 * Creates an dumpster
+	 */
 	private void createDumpster() {
 		int id = Integer.parseInt(idTextField.getText());
 		int regionId = Integer.parseInt(regionIdTextField.getText());
@@ -86,12 +92,21 @@ public class DumpsterMainFxmlController implements Initializable {
 		dumpsterController.createDumpster(id, regionId, capacity, type);
 	}
 	
+	/**
+	 * Starts udp client.
+	 * @throws UnknownHostException Indicate that the IP address of a host could not be determined.
+	 * @throws SocketException Indicate that there is an error creating or accessing a Socket.
+	 * @throws InterruptedException If the thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
+	 */
 	private void startClient() throws UnknownHostException, SocketException, InterruptedException {
 		int port = Integer.parseInt(portTextField.getText());
 		String address = ipTextField.getText();
 		dumpsterController.turnClientOn(port, address);		
 	}
 	
+	/**
+	 * Change screen elements.
+	 */
 	private void toggleElements() {
 		ipTextField.setDisable(true);
 		portTextField.setDisable(true);

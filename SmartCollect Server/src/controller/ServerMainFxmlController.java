@@ -23,6 +23,9 @@ import model.Driver;
 import model.Dumpster;
 import util.Log;
 
+/**
+ * @author Matheus Teles
+ */
 public class ServerMainFxmlController implements Initializable, Observer {
 	@FXML
     private Label ipNumberLabel;
@@ -109,6 +112,9 @@ public class ServerMainFxmlController implements Initializable, Observer {
 		pageUpdater();		
 	}
 	
+	/**
+	 * Write on log an exit message.
+	 */
 	public void exit() {
 		logTextArea.appendText(Log.server("Closing server" + "\n"));
 		try {
@@ -121,13 +127,16 @@ public class ServerMainFxmlController implements Initializable, Observer {
 		logTextArea.appendText(Log.server("Server closed" + "\n"));
 	}
 	
+	/**
+	 * Update server page.
+	 */
 	private void pageUpdater() {		
 		new Thread(new Runnable() { 
             private ObservableList<Dumpster> dumpstersOl;
             private ObservableList<Driver> driversOl;
 
 			public void run() {
-	            	ipNumberLabel.setText(serverController.getServerIp());
+	            	ipNumberLabel.setText(serverController.getServerIp() + " - " + serverController.getServerHostName());
 	        		udpPortNumberLabel.setText(Integer.toString(serverController.getUdpServerPort()));
 	        		tcpPortNumberLabel.setText(Integer.toString(serverController.getTcpServerPort()));
 	            	dumpstersIdColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getIdNumber()).asObject());            	
@@ -163,6 +172,11 @@ public class ServerMainFxmlController implements Initializable, Observer {
         }).start();
 	}
 	
+	/**
+	 * Write an exception stack trace.
+	 * @param e Exception that will be opened.
+	 * @return StackTrace message.
+	 */
 	private String printStackTrace(Exception e) {
 		String stackTrace = e.toString() + "\n";
 		StackTraceElement[] elements = e.getStackTrace();

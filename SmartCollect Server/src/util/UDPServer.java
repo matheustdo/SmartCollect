@@ -10,15 +10,28 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Observable;
 
+/**
+ * @author Matheus Teles
+ */
 public class UDPServer extends Observable implements Runnable {
 	private Object obj;
 	private DatagramSocket serverSocket;
 	
+	/**
+	 * Constructs a new UDPServer
+	 * @param serverPort Server port.
+	 * @param serverIP Server ip.
+	 * @throws UnknownHostException Indicate that the IP address of a host could not be determined.
+	 * @throws SocketException Indicate that there is an error creating or accessing a Socket.
+	 */
 	public UDPServer(int serverPort, String serverIP) throws UnknownHostException, SocketException {
 		this.obj = new Object();
 		this.serverSocket = new DatagramSocket(serverPort, InetAddress.getByName(serverIP));
 	}
 	
+	/**
+	 * Thread run method.
+	 */
 	@Override
 	public void run() {
 		byte[] receivedData = new byte[1024];
@@ -38,11 +51,43 @@ public class UDPServer extends Observable implements Runnable {
 		}
 	}
 	
+	/**
+	 * Get datagram socket.
+	 * @return Datagram socket.
+	 */
 	public DatagramSocket getDatagramSocket() {
 		return serverSocket;
 	}
 
+	/**
+	 * Get input object.
+	 * @return Input object.
+	 */
 	public Object getObj() {
 		return obj;
 	}	
+	
+	/**
+	 * Get server address.
+	 * @return Server address.
+	 */
+	public String getServerAdress() {
+		return serverSocket.getLocalAddress().getHostAddress();
+	}
+	
+	/**
+	 * Get server host name.
+	 * @return Server host name.
+	 */
+	public String getServerHostName() {
+		return serverSocket.getLocalAddress().getHostName();
+	}
+	
+	/**
+	 * Get server port.
+	 * @return Server port.
+	 */
+	public int getServerPort() {
+		return serverSocket.getLocalPort();
+	}
 }

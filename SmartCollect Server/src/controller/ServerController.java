@@ -30,6 +30,9 @@ import model.DumpsterType;
 import util.TCPServer;
 import util.UDPServer;
 
+/**
+ * @author Matheus Teles
+ */
 public class ServerController extends Observable implements Observer {
 	private int udpServerPort,
 				tcpServerPort,
@@ -44,6 +47,9 @@ public class ServerController extends Observable implements Observer {
 	private Map<Integer, Driver> drivers;
 	private final static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
+	/**
+	 * Constructs a new ServerController.
+	 */
 	public ServerController() {
 		this.serverIp = "localhost";
 		this.udpServerPort = 4065;
@@ -56,6 +62,11 @@ public class ServerController extends Observable implements Observer {
 		this.drivers = new HashMap<Integer, Driver>();
 	}
 	
+	/**
+	 * Turns on udp server.
+	 * @throws UnknownHostException Indicates that the IP address of a host could not be determined.
+	 * @throws SocketException Indicates that there is an error creating or accessing a Socket.
+	 */
 	public void turnUdpServerOn() throws UnknownHostException, SocketException {
 		runnableUdpServer = new UDPServer(udpServerPort, serverIp);
 		Thread threadUDPServer =  new Thread(runnableUdpServer);
@@ -63,6 +74,10 @@ public class ServerController extends Observable implements Observer {
 		runnableUdpServer.addObserver(this);
 	}
 	
+	/**
+	 * Turns on tcp server.
+	 * @throws IOException Signals that an I/O exception of some sort has occurred.
+	 */
 	public void turnTcpServerOn() throws IOException {
 		runnableTcpServer = new TCPServer(tcpServerPort, serverIp);
 		Thread threadTCPServer =  new Thread(runnableTcpServer);
@@ -70,26 +85,52 @@ public class ServerController extends Observable implements Observer {
 		runnableTcpServer.addObserver(this);
 	}
 	
-	public void updateDrivers() throws IOException {
-		
-	}
-	
+	/**
+	 * Returns the server ip.
+	 * @return Server ip.
+	 */
 	public String getServerIp() {		
-		return serverIp;
+		return runnableUdpServer.getServerAdress();
 	}
 	
+	/**
+	 * Returns the server host name.
+	 * @return Server host name.
+	 */
+	public String getServerHostName() {
+		return runnableUdpServer.getServerHostName();
+	}
+	
+	/**
+	 * Returns the udp server port.
+	 * @return Udp server port.
+	 */
 	public int getUdpServerPort() {
-		return udpServerPort;
+		return runnableUdpServer.getServerPort();
 	}
 	
+	/**
+	 * Returns the tcp server port.
+	 * @return Tcp server port.
+	 */
 	public int getTcpServerPort() {
-		return tcpServerPort;
+		return runnableTcpServer.getServerPort();
 	}
 	
+	/**
+	 * Returns a hashmap that contains all dumpsters.
+	 * @return Hashmap with all dumpsters.
+	 */
 	public Map<Integer, Dumpster> getDumpsters() {
 		return dumpsters;
 	}
 	
+	/**
+	 * Generate a server config file with server ip, udp server port,
+	 * tcp server port and a minimal trash percentage.
+	 * @param file Config file.
+	 * @throws IOException Signals that an I/O exception of some sort has occurred.
+	 */
 	private void createServerConfigFile(File file) throws IOException {		
 		serverIp = "localhost";
 		
@@ -103,7 +144,11 @@ public class ServerController extends Observable implements Observer {
         bw.close();
         fw.close();
 	}
-
+	
+	/**
+	 * Reads the config server file.
+	 * @throws IOException Signals that an I/O exception of some sort has occurred.
+	 */
 	public void readServerConfigFile() throws IOException {
 		File file = new File("server.properties");
 		
@@ -125,10 +170,11 @@ public class ServerController extends Observable implements Observer {
             fr.close();
 		}
 	}	
-
+	
 	@Override
 	public void update(Observable subject, Object arg1) {
 		if(subject instanceof UDPServer) {
+			// The first object received creates a new dumpster
 			if(((UDPServer) subject).getObj() instanceof Dumpster) {
 				Dumpster dumpster = (Dumpster)((UDPServer) subject).getObj();
 				dumpsters.put(((Dumpster)((UDPServer) subject).getObj()).getIdNumber(), dumpster);
@@ -176,6 +222,10 @@ public class ServerController extends Observable implements Observer {
 		}
 	}
 	
+	/**
+	 * Returns a list that contains all dumpsters.
+	 * @return A dumpsters list.
+	 */
 	public List<Dumpster> getDumpstersList() {
 		Set<Integer> keys = dumpsters.keySet();
 		List<Dumpster> dumpstersList = new ArrayList<Dumpster>();
@@ -187,6 +237,10 @@ public class ServerController extends Observable implements Observer {
 		return dumpstersList;		
 	}
 	
+	/**
+	 * Returns a list that contains all drivers.
+	 * @return A drivers list.
+	 */
 	public List<Driver> getDriversList() {
 		Set<Integer> keys = drivers.keySet();
 		List<Driver> driversList = new ArrayList<Driver>();
@@ -198,22 +252,41 @@ public class ServerController extends Observable implements Observer {
 		return driversList;
 	}
 	
+	/**
+	 * Returns the last log message.
+	 * @return Last log message.
+	 */
 	public String getLastMessage() {
 		return lastMessage;
 	}
 
+	/**
+	 * Returns the quantity of trash cans.
+	 * @return Trash cans quantity.
+	 */
 	public int getTrashCansQuantity() {
 		return trashCansQuantity;
 	}
 	
+	/**
+	 * Returns the quantity of transfer stations.
+	 * @return Transfer stations quantity.
+	 */
 	public int getTransferStationsQuantity() {
 		return transferStationsQuantity;
 	}
 	
+	/**
+	 * Returnts the quantity of drivers.
+	 * @return Drivers quantity.
+	 */
 	public int getDriversQuantity() {
 		return drivers.size();
 	}
 	
+	/**
+	 * Update dumpsters counters.
+	 */
 	public void updateDumpstersCounters() { 
 		Set<Integer> keys = dumpsters.keySet();
 		trashCansQuantity = 0;
@@ -230,6 +303,10 @@ public class ServerController extends Observable implements Observer {
 		}
 	}
 	
+	/**
+	 * Persists the system.
+	 * @throws IOException Signals that an I/O exception of some sort has occurred.
+	 */
 	public void saveServerData() throws IOException {
 		File file = new File("server.dat");
 		
@@ -246,6 +323,11 @@ public class ServerController extends Observable implements Observer {
 		fos.close();
 	}
 	
+	/**
+	 * Loads server data.
+	 * @throws IOException Signals that an I/O exception of some sort has occurred.
+	 * @throws ClassNotFoundException Throws if the class is not found.
+	 */
 	@SuppressWarnings("unchecked")
 	public void loadServerData() throws IOException, ClassNotFoundException {
 		File file = new File("server.dat");
@@ -264,6 +346,11 @@ public class ServerController extends Observable implements Observer {
 		}		
 	}
 	
+	/**
+	 * Saves an file that contains a log.
+	 * @param log Log string.
+	 * @throws IOException Signals that an I/O exception of some sort has occurred.
+	 */
 	public void saveServerLog(String log) throws IOException {
 		File dir = new File("logs");
 		if(!dir.exists()) {
@@ -287,6 +374,14 @@ public class ServerController extends Observable implements Observer {
         bw.close();
 	}
 	
+	/**
+	 * Returns a string with a route from an informed position and region.
+	 * Dumpsters that has more than the minimun trash percentage are considered priority.
+	 * Dumpsters that isn't piority has a dot before on route.
+	 * @param pos Driver actual position.
+	 * @param region Driver actual region.
+	 * @return A string that contains a route.
+	 */
 	public String getRoute(int pos, int region) {
 		List<Dumpster> dumpstersList = getDumpstersList();
 		List<Dumpster> restDumpstersList = new ArrayList<Dumpster>();
@@ -323,6 +418,7 @@ public class ServerController extends Observable implements Observer {
 					route += closer + " ";
 					lastPrioritized = closer;
 				} else {
+					/* Adds unpriotirizeds dumpsters on another list */
 					restDumpstersList.add(closerDumpster);
 				}
 				
@@ -334,6 +430,7 @@ public class ServerController extends Observable implements Observer {
 			}
 		}
 		
+		/* Reset counters variables */
 		if(!restDumpstersList.isEmpty()) {
 			before = lastPrioritized;
 			closer =  restDumpstersList.get(0).getIdNumber();
@@ -368,6 +465,13 @@ public class ServerController extends Observable implements Observer {
 		return route;		
 	}
 	
+	/**
+	 * Returns the closer position from an actual position.
+	 * @param current Actual position.
+	 * @param a First position.
+	 * @param b Second position.
+	 * @return Closer position.
+	 */
 	private int getCloser(int current, int a, int b) {
 		if(Math.abs(current-a) <= Math.abs(current-b)) {
 			return a;

@@ -16,6 +16,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 
+/**
+ * @author Matheus Teles
+ */
 public class DriverMainFxmlController implements Initializable, Observer {
 	@FXML
     private TextField serverIpTextField;
@@ -66,6 +69,9 @@ public class DriverMainFxmlController implements Initializable, Observer {
     	}
     }
     
+    /**
+     * Generates a formatted route.
+     */
 	private void generateRoute() {
 		if(driverController.getRoute() != null) {
 			StringTokenizer st = new StringTokenizer(driverController.getRoute());   	
@@ -81,6 +87,9 @@ public class DriverMainFxmlController implements Initializable, Observer {
 		}
     }
 
+	/**
+	 * Updates view.
+	 */
 	@Override
 	public void update(Observable o, Object arg) {
 		if(o instanceof DriverController) {

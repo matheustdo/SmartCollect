@@ -8,6 +8,9 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+/**
+ * @author Matheus Teles
+ */
 public class ServerMain extends Application {
 	public static void main(String[] args) {
 		launch(args);
@@ -19,7 +22,7 @@ public class ServerMain extends Application {
 		Parent root = loader.load();		
 		ServerMainFxmlController serverFxmlController = loader.getController();
 		
-		Scene scene = new Scene(root, 790, 480);		
+		Scene scene = new Scene(root, 830, 480);		
 		
 		primaryStage.setTitle("SmartColect Server");
 		primaryStage.setScene(scene);
