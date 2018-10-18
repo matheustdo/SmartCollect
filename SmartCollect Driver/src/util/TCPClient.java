@@ -41,6 +41,7 @@ public class TCPClient extends Observable implements Runnable {
 				/* Send output object to server */
 				ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 				oos.writeObject(outObj);
+				System.out.println(outObj);
 				/* Receive input object from server */
 				ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 				inObj = ois.readObject();

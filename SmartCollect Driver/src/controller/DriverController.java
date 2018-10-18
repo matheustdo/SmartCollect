@@ -3,7 +3,9 @@ package controller;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.StringTokenizer;
 
+import model.SCMProtocol;
 import util.TCPClient;
 
 /**
@@ -23,7 +25,7 @@ public class DriverController extends Observable implements Observer {
 	 * @throws IOException Signals that an I/O exception of some sort has occurred.
 	 */
 	public void turnClientOn(int serverPort, String serverIP, String id, String position) throws InterruptedException, IOException {
-		runnableTcpClient = new TCPClient(serverPort, serverIP, id + " " + position);
+		runnableTcpClient = new TCPClient(serverPort, serverIP, SCMProtocol.PROCESS + " " + id + " " + position);
 		Thread threadClient =  new Thread(runnableTcpClient);		
 		threadClient.start();	
 		runnableTcpClient.addObserver(this);
@@ -42,10 +44,15 @@ public class DriverController extends Observable implements Observer {
 	 */
 	@Override
 	public void update(Observable o, Object arg) {
-		if(o instanceof TCPClient) {
-			route = ((TCPClient) o).getObjReceived().toString();
-			setChanged();
-			notifyObservers();
+		if(o instanceof TCPClient && ((TCPClient) o).getObjReceived() instanceof String) {
+			StringTokenizer st = new StringTokenizer(((TCPClient) o).getObjReceived().toString());
+			int action = Integer.parseInt(st.nextToken());
+			
+			if(action == SCMProtocol.UPDATE) {
+				route = ((TCPClient) o).getObjReceived().toString().replaceFirst(action + " ", "");
+				setChanged();
+				notifyObservers();
+			}			
 		}
 	}
 	
@@ -53,7 +60,7 @@ public class DriverController extends Observable implements Observer {
 	 * Set tcp output object.
 	 * @param obj Output object.
 	 */
-	public void setTcpOutObject(Object obj) {
-		runnableTcpClient.setOutObj(obj);
+	public void setTcpOutObject(String obj) {
+		runnableTcpClient.setOutObj(SCMProtocol.PROCESS + " " + obj);
 	}
 }

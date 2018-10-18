@@ -179,7 +179,7 @@ public class ServerController extends Observable implements Observer {
 				StringTokenizer st = new StringTokenizer(((UDPServer) subject).getObj().toString());
 				int action = Integer.parseInt(st.nextToken());
 				// The first object received creates a new dumpster
-				if(st.hasMoreTokens() && action == SCMProtocol.CREATE) {
+				if(action == SCMProtocol.CREATE) {
 					int id = Integer.parseInt(st.nextToken());
 					Double maxCapacity = Double.parseDouble(st.nextToken());
 					DumpsterType dumpsterType = convertDumpsterType(st.nextToken());					
@@ -188,7 +188,7 @@ public class ServerController extends Observable implements Observer {
 					this.lastMessage = "A " + dumpster.getTypeName() + " was created with ID " + id;
 					setChanged();
 					notifyObservers();
-				} else if (st.hasMoreTokens() && action == SCMProtocol.UPDATE){
+				} else if (action == SCMProtocol.UPDATE){
 					int id = Integer.parseInt(st.nextToken());
 					Double trashQuantity = Double.parseDouble(st.nextToken());
 					Dumpster dumpster;
@@ -206,23 +206,27 @@ public class ServerController extends Observable implements Observer {
 					}					
 				}		
 			}
-		} /*else if (subject instanceof TCPServer) {
-			if(((TCPServer) subject).getInObj() instanceof String) {			
-				StringTokenizer st = new StringTokenizer((String) ((TCPServer) subject).getInObj());
-				int id = Integer.parseInt(st.nextToken());
-				int pos = Integer.parseInt(st.nextToken());
-				String route = getRoute(pos, id);
-				runnableTcpServer.setOutObj(route);
+		} else if (subject instanceof TCPServer) {
+			if(((TCPServer) subject).getInObj() instanceof String) {		
+				StringTokenizer st = new StringTokenizer(((TCPServer) subject).getInObj().toString());
+				int action = Integer.parseInt(st.nextToken());
 				
-				if (!drivers.containsKey(id)) {
-					this.lastMessage = "A driver was created at region id " + id;
-					setChanged();
-					notifyObservers();
+				if(action == SCMProtocol.PROCESS) {
+					int id = Integer.parseInt(st.nextToken());
+					int pos = Integer.parseInt(st.nextToken());
+					String route = getRoute(pos);
+					runnableTcpServer.setOutObj(SCMProtocol.UPDATE + " " + route);
+					
+					if (!drivers.containsKey(id)) {
+						this.lastMessage = "A driver was created at region id " + id;
+						setChanged();
+						notifyObservers();
+					}
+					
+					drivers.put(id, new Driver(id, pos, route));
 				}
-				
-				drivers.put(id, new Driver(id, pos, route));
 			}
-		}*/
+		}
 	}
 	
 	/**
@@ -400,19 +404,11 @@ public class ServerController extends Observable implements Observer {
 	 * @param region Driver actual region.
 	 * @return A string that contains a route.
 	 */
-	public String getRoute(int pos, int region) {
+	public String getRoute(int pos) {
 		List<Dumpster> dumpstersList = getDumpstersList();
 		List<Dumpster> restDumpstersList = new ArrayList<Dumpster>();
 		String route = new String();
 		int closer = 0, closerIndex = 0, before = pos, lastPrioritized = pos;
-		
-		/* Removes all dumpsters outside the region 
-		for(int x = 0; x < dumpstersList.size(); x++) {		
-			if(dumpstersList.get(x).getRegionIdNumber() != region) {
-				dumpstersList.remove(x);
-				x--;
-			}
-		}*/
 		
 		if(!dumpstersList.isEmpty()) {
 			closer =  dumpstersList.get(0).getIdNumber();
