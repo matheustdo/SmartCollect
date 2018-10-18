@@ -214,6 +214,7 @@ public class ServerController extends Observable implements Observer {
 				if(action == SCMProtocol.PROCESS) {
 					int id = Integer.parseInt(st.nextToken());
 					int pos = Integer.parseInt(st.nextToken());
+					String status = st.nextToken();
 					String route = getRoute(pos);
 					runnableTcpServer.setOutObj(SCMProtocol.UPDATE + " " + route);
 					
@@ -223,7 +224,7 @@ public class ServerController extends Observable implements Observer {
 						notifyObservers();
 					}
 					
-					drivers.put(id, new Driver(id, pos, route));
+					drivers.put(id, new Driver(id, pos, route, status));
 				}
 			}
 		}

@@ -77,6 +77,9 @@ public class ServerMainFxmlController implements Initializable, Observer {
 
     @FXML
     private TableColumn<Driver, String> driversRouteColumn;
+    
+    @FXML
+    private TableColumn<Driver, String> driversStatusColumn;
 
     @FXML
     private TextArea logTextArea;
@@ -144,6 +147,7 @@ public class ServerMainFxmlController implements Initializable, Observer {
 	            	driversIdColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getId()).asObject());
 	            	driversPositionColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getPos()).asObject());
 	            	driversRouteColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getRoute()));
+	            	driversStatusColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getStatus()));
             	while(true) {    
             		serverController.updateDumpstersCounters();
             		Platform.runLater(new Runnable() {

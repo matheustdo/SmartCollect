@@ -1,5 +1,5 @@
 package controller;
-
+	
 import java.io.IOException;
 import java.net.URL;
 import java.util.Observable;
@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
@@ -36,6 +37,9 @@ public class DriverMainFxmlController implements Initializable, Observer {
     private Button turnOnButton;
 
     @FXML
+    private CheckBox brokenChoicer;
+
+    @FXML
     private Label statusTextField;
 
     @FXML
@@ -56,7 +60,7 @@ public class DriverMainFxmlController implements Initializable, Observer {
     void turnOnButtonAction(ActionEvent event) throws InterruptedException, IOException {
     	if(statusTextField.getText().equals("OFFLINE")) {
 	    	driverController.turnClientOn(Integer.parseInt(serverPortTextField.getText()), serverIpTextField.getText(), 
-	    								  driverIdTextField.getText() , driverPosTextField.getText());	    	
+	    								  driverIdTextField.getText() , driverPosTextField.getText(), brokenChoicer.isSelected());	    	
 	    	statusTextField.setText("ONLINE");
 	    	statusTextField.setTextFill(Color.DARKGREEN);
 	    	turnOnButton.setText("Update position");
@@ -65,7 +69,7 @@ public class DriverMainFxmlController implements Initializable, Observer {
 	    	serverPortTextField.setDisable(true);
     	} else {
     		driverController.setTcpOutObject(driverIdTextField.getText() + " " + 
-    										 driverPosTextField.getText());
+    										 driverPosTextField.getText() + " " + brokenChoicer.isSelected());
     	}
     }
     

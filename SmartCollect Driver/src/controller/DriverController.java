@@ -24,8 +24,8 @@ public class DriverController extends Observable implements Observer {
 	 * @throws InterruptedException Thrown when a thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
 	 * @throws IOException Signals that an I/O exception of some sort has occurred.
 	 */
-	public void turnClientOn(int serverPort, String serverIP, String id, String position) throws InterruptedException, IOException {
-		runnableTcpClient = new TCPClient(serverPort, serverIP, SCMProtocol.PROCESS + " " + id + " " + position);
+	public void turnClientOn(int serverPort, String serverIP, String id, String position, boolean status) throws InterruptedException, IOException {
+		runnableTcpClient = new TCPClient(serverPort, serverIP, SCMProtocol.PROCESS + " " + id + " " + position + " " + status);
 		Thread threadClient =  new Thread(runnableTcpClient);		
 		threadClient.start();	
 		runnableTcpClient.addObserver(this);
