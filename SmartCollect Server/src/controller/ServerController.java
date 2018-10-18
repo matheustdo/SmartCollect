@@ -41,7 +41,8 @@ public class ServerController extends Observable implements Observer {
 				transferStationsQuantity,
 				minimunTrashPercentage;
 	private String serverIp,
-				   lastMessage;
+				   lastMessage,
+				   areaId;
 	private UDPServer runnableUdpServer;
 	private TCPServer runnableTcpServer;
 	private Map<Integer, Dumpster> dumpsters;
@@ -58,6 +59,7 @@ public class ServerController extends Observable implements Observer {
 		this.trashCansQuantity = 0;
 		this.transferStationsQuantity = 0;
 		this.minimunTrashPercentage = 80;
+		this.areaId = "0";
 		this.lastMessage = "";
 		this.dumpsters = new HashMap<Integer, Dumpster>();
 		this.drivers = new HashMap<Integer, Driver>();
@@ -141,7 +143,8 @@ public class ServerController extends Observable implements Observer {
         BufferedWriter bw = new BufferedWriter(fw);
         bw.write("#SmartCollect server properties\r\n" + "server-ip: " + serverIp +
         		 "\r\nudp-server-port: " + Integer.toString(udpServerPort) + "\r\ntcp-server-port: " +
-        		 Integer.toString(tcpServerPort) + "\r\nminimun-trash-percentage: " + minimunTrashPercentage);
+        		 Integer.toString(tcpServerPort) + "\r\nminimun-trash-percentage: " + minimunTrashPercentage +
+        		 "\r\nserver-area-id: " + areaId);
         bw.close();
         fw.close();
 	}
@@ -167,6 +170,8 @@ public class ServerController extends Observable implements Observer {
             tcpServerPort = Integer.parseInt(tcpPortLine.replace("tcp-server-port:", ""));
             String minimunTrashLine = br.readLine().replaceAll(" ", "");
             minimunTrashPercentage = Integer.parseInt(minimunTrashLine.replace("minimun-trash-percentage:", ""));
+            String areaIdLine = br.readLine().replaceAll(" ", "");
+            areaId = areaIdLine.replace("server-area-id:", "");
             br.close();
             fr.close();
 		}
@@ -493,5 +498,21 @@ public class ServerController extends Observable implements Observer {
 		} else {
 			return b;
 		}
+	}
+
+	/**
+	 * Get server area id
+	 * @return Area id
+	 */
+	public String getServerAreaId() {
+		return areaId;
+	}
+
+	/**
+	 * Get server minimun trash percentage
+	 * @return Minimum trash percentage
+	 */
+	public int getMinimumTrashQuantity() {
+		return minimunTrashPercentage;
 	}
 }

@@ -29,6 +29,12 @@ import util.Log;
 public class ServerMainFxmlController implements Initializable, Observer {
 	@FXML
     private Label ipNumberLabel;
+	
+	@FXML
+    private Label areaIdTextLabel;
+	
+	@FXML
+    private Label minimumTextLabel;
 
     @FXML
     private Label udpPortNumberLabel;
@@ -136,6 +142,8 @@ public class ServerMainFxmlController implements Initializable, Observer {
             private ObservableList<Driver> driversOl;
 
 			public void run() {
+					areaIdTextLabel.setText(serverController.getServerAreaId());
+					minimumTextLabel.setText(Integer.toString(serverController.getMinimumTrashQuantity()));
 	            	ipNumberLabel.setText(serverController.getServerIp() + " - " + serverController.getServerHostName());
 	        		udpPortNumberLabel.setText(Integer.toString(serverController.getUdpServerPort()));
 	        		tcpPortNumberLabel.setText(Integer.toString(serverController.getTcpServerPort()));	 

@@ -22,8 +22,8 @@
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="170.0" vgrow="NEVER" />
-                <RowConstraints minHeight="10.0" prefHeight="299.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="207.0" minHeight="10.0" prefHeight="203.0" vgrow="NEVER" />
+                <RowConstraints maxHeight="295.0" minHeight="10.0" prefHeight="267.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
@@ -32,18 +32,22 @@
                            <content>
                               <AnchorPane prefHeight="143.0" prefWidth="201.0">
                                  <children>
-                                    <Label layoutX="15.0" layoutY="14.0" text="Server IP:" />
-                                    <Label layoutX="15.0" layoutY="31.0" text="UDP Server Port:" />
-                                    <Label layoutX="15.0" layoutY="69.0" text="Trash cans:" />
-                                    <Label layoutX="15.0" layoutY="88.0" text="Transfer stations:" />
-                                    <Label layoutX="15.0" layoutY="106.0" text="Drivers: " />
-                                    <Label fx:id="ipNumberLabel" layoutX="70.0" layoutY="14.0" text="0000" />
-                                    <Label fx:id="udpPortNumberLabel" layoutX="110.0" layoutY="31.0" text="0000" />
-                                    <Label fx:id="trashCansQuantityLabel" layoutX="79.0" layoutY="69.0" text="0000" />
-                                    <Label fx:id="transferStationsQuantityLabel" layoutX="111.0" layoutY="88.0" text="0000" />
-                                    <Label fx:id="driversQuantityLabel" layoutX="61.0" layoutY="106.0" text="0000" />
-                                    <Label layoutX="15.0" layoutY="50.0" text="TCP Server Port:" />
-                                    <Label fx:id="tcpPortNumberLabel" layoutX="108.0" layoutY="50.0" text="0000" />
+                                    <Label layoutX="14.0" layoutY="47.0" text="Server IP:" />
+                                    <Label layoutX="14.0" layoutY="64.0" text="UDP Server Port:" />
+                                    <Label layoutX="14.0" layoutY="102.0" text="Trash cans:" />
+                                    <Label layoutX="14.0" layoutY="121.0" text="Transfer stations:" />
+                                    <Label layoutX="14.0" layoutY="139.0" text="Drivers: " />
+                                    <Label fx:id="ipNumberLabel" layoutX="69.0" layoutY="47.0" text="0000" />
+                                    <Label fx:id="udpPortNumberLabel" layoutX="109.0" layoutY="64.0" text="0000" />
+                                    <Label fx:id="trashCansQuantityLabel" layoutX="78.0" layoutY="102.0" text="0000" />
+                                    <Label fx:id="transferStationsQuantityLabel" layoutX="110.0" layoutY="121.0" text="0000" />
+                                    <Label fx:id="driversQuantityLabel" layoutX="60.0" layoutY="139.0" text="0000" />
+                                    <Label layoutX="14.0" layoutY="83.0" text="TCP Server Port:" />
+                                    <Label fx:id="tcpPortNumberLabel" layoutX="107.0" layoutY="83.0" text="0000" />
+                                    <Label layoutX="13.0" layoutY="30.0" text="Mininum trash percentage:" />
+                                    <Label fx:id="minimumTextLabel" layoutX="164.0" layoutY="30.0" text="0000" />
+                                    <Label layoutX="14.0" layoutY="13.0" text="Area ID:" />
+                                    <Label fx:id="areaIdTextLabel" layoutX="65.0" layoutY="13.0" text="0000" />
                                  </children>
                               </AnchorPane>
                            </content>
@@ -52,7 +56,7 @@
                   </AnchorPane>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                      <children>
-                        <TabPane pickOnBounds="false" prefHeight="200.0" prefWidth="200.0" rotateGraphic="true" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="2.0">
+                        <TabPane pickOnBounds="false" prefHeight="200.0" prefWidth="273.0" rotateGraphic="true" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="2.0">
                           <tabs>
                             <Tab closable="false" text="Dumpsters">
                               <content>
