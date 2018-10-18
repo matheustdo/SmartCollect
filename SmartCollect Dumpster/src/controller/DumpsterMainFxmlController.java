@@ -42,9 +42,6 @@ public class DumpsterMainFxmlController implements Initializable {
 
     @FXML
     private TextField idTextField;
-    
-    @FXML
-    private TextField regionIdTextField;
 
     @FXML
     private TextField capacityTextField;
@@ -74,6 +71,13 @@ public class DumpsterMainFxmlController implements Initializable {
 	}
 	
 	@FXML
+    void onMousePressed(MouseEvent event) {
+		levelLabel.setText(decimalFormat.format(quantitySlider.getValue()) + "%");
+		quantityLabel.setText(decimalFormat.format(dumpsterController.updateTrashQuantity(quantitySlider.getValue())) + "/" + capacityTextField.getText() + " l");
+		dumpsterController.changeClientObj();
+    }
+	
+	@FXML
     void turnOnAction(ActionEvent event) throws UnknownHostException, SocketException, InterruptedException {
 		createDumpster();
 		startClient();
@@ -86,10 +90,9 @@ public class DumpsterMainFxmlController implements Initializable {
 	 */
 	private void createDumpster() {
 		int id = Integer.parseInt(idTextField.getText());
-		int regionId = Integer.parseInt(regionIdTextField.getText());
 		double capacity = Double.parseDouble(capacityTextField.getText());
 		String type = typeChoicer.getSelectionModel().selectedItemProperty().getValue();
-		dumpsterController.createDumpster(id, regionId, capacity, type);
+		dumpsterController.createDumpster(id, capacity, type);
 	}
 	
 	/**
@@ -112,7 +115,6 @@ public class DumpsterMainFxmlController implements Initializable {
 		portTextField.setDisable(true);
 		typeChoicer.setDisable(true);
 		idTextField.setDisable(true);
-		regionIdTextField.setDisable(true);
 		capacityTextField.setDisable(true);
 		turnOnButton.setDisable(true);		
 		quantitySlider.setDisable(false);

@@ -6,7 +6,7 @@ import java.text.DecimalFormat;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
-
+	
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;

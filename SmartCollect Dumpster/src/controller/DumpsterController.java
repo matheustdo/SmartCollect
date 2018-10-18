@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 
 import model.Dumpster;
 import model.DumpsterType;
+import model.SCMProtocol;
 import util.UDPClient;
 
 /**
@@ -12,7 +13,7 @@ import util.UDPClient;
  */
 public class DumpsterController {
     private Dumpster dumpster;
-    private Runnable runnableUdpClient;
+    private UDPClient runnableUdpClient;
     
     /**
      * Creates a dumpster.
@@ -21,11 +22,11 @@ public class DumpsterController {
      * @param address Dumpster street address.
      * @param type Dumpster type.
      */
-    public void createDumpster(int idNumber, int regionIdNumber, double maxCapacity, String type) {
+    public void createDumpster(int idNumber, double maxCapacity, String type) {
     	if(type.equals("Trash can")) {
-    		dumpster = new Dumpster(idNumber, regionIdNumber, maxCapacity, DumpsterType.CAN);
+    		dumpster = new Dumpster(idNumber, maxCapacity, DumpsterType.CAN);
     	} else {
-    		dumpster = new Dumpster(idNumber, regionIdNumber, maxCapacity, DumpsterType.STATION);
+    		dumpster = new Dumpster(idNumber, maxCapacity, DumpsterType.STATION);
     	}
     }
     
@@ -48,18 +49,18 @@ public class DumpsterController {
      * @throws InterruptedException If the thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
      */
     public void turnClientOn(int serverPort, String serverIP) throws UnknownHostException, SocketException, InterruptedException {
-    	runnableUdpClient = new UDPClient(serverPort, serverIP, dumpster);
+    	runnableUdpClient = new UDPClient(serverPort, serverIP, SCMProtocol.CREATE + " " + SCMProtocol.DUMPSTER + " " + dumpster.toString());
 		Thread threadClient =  new Thread(runnableUdpClient);		
 		threadClient.start();
 		Thread.sleep(50);
 		/* Change output object just to a string that contains the dumpster id and trash quantity */
-		((UDPClient)runnableUdpClient).setObj(dumpster.toString());
+		changeClientObj();
 	}
     
     /**
      * Change the client object.
      */
     public void changeClientObj() {
-    	((UDPClient)runnableUdpClient).setObj(dumpster.toString());
+    	((UDPClient)runnableUdpClient).setObj(SCMProtocol.UPDATE + " " + dumpster.toStringShort());
     }
 }

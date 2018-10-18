@@ -50,6 +50,7 @@ public class UDPClient implements Runnable {
                 byte[] objData = baos.toByteArray();
             	datagramPacket = new DatagramPacket(objData, objData.length, serverIP, serverPort);
                 socket.send(datagramPacket);
+                System.out.println(obj);
                 Thread.sleep(2000);
             }
 		} catch (IOException | InterruptedException e) {
