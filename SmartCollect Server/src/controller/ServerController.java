@@ -27,6 +27,7 @@ import java.util.StringTokenizer;
 import model.Driver;
 import model.Dumpster;
 import model.DumpsterType;
+import model.SCMProtocol;
 import util.TCPServer;
 import util.UDPServer;
 
@@ -174,36 +175,38 @@ public class ServerController extends Observable implements Observer {
 	@Override
 	public void update(Observable subject, Object arg1) {
 		if(subject instanceof UDPServer) {
-			// The first object received creates a new dumpster
-			if(((UDPServer) subject).getObj() instanceof Dumpster) {
-				Dumpster dumpster = (Dumpster)((UDPServer) subject).getObj();
-				dumpsters.put(((Dumpster)((UDPServer) subject).getObj()).getIdNumber(), dumpster);
-				this.lastMessage = "A " + dumpster.getTypeName() + " was created with ID " + dumpster.getIdNumber();
-				setChanged();
-				notifyObservers();
-			} else if (((UDPServer) subject).getObj() instanceof String){
-				String obj = (String) ((UDPServer) subject).getObj();
-				StringTokenizer st = new StringTokenizer(obj);
-				int id = Integer.parseInt(st.nextToken());
-				Double trashQuantity = Double.parseDouble(st.nextToken());
-				Dumpster dumpster;
-				
-				if(dumpsters.containsKey(id)) {
-					dumpster = dumpsters.get(id);				
-					int regionId = dumpster.getRegionIdNumber();
-					double capacity = dumpster.getMaxCapacity();
-					DumpsterType type = dumpster.getType();				
-					dumpster = new Dumpster(id, regionId, trashQuantity, capacity, type);
+			if(((UDPServer) subject).getObj() instanceof String) {
+				StringTokenizer st = new StringTokenizer(((UDPServer) subject).getObj().toString());
+				int action = Integer.parseInt(st.nextToken());
+				// The first object received creates a new dumpster
+				if(st.hasMoreTokens() && action == SCMProtocol.CREATE) {
+					int id = Integer.parseInt(st.nextToken());
+					Double maxCapacity = Double.parseDouble(st.nextToken());
+					DumpsterType dumpsterType = convertDumpsterType(st.nextToken());					
+					Dumpster dumpster = new Dumpster(id, maxCapacity, dumpsterType);
 					dumpsters.put(id, dumpster);
-				} else {
-					dumpster = new Dumpster(id);
-					dumpsters.put(id, dumpster);
-					this.lastMessage = "Unknow dumpster was created with ID " + dumpster.getIdNumber();
+					this.lastMessage = "A " + dumpster.getTypeName() + " was created with ID " + id;
 					setChanged();
 					notifyObservers();
-				}				 
-			}			
-		} else if (subject instanceof TCPServer) {
+				} else if (st.hasMoreTokens() && action == SCMProtocol.UPDATE){
+					int id = Integer.parseInt(st.nextToken());
+					Double trashQuantity = Double.parseDouble(st.nextToken());
+					Dumpster dumpster;
+					
+					if(dumpsters.containsKey(id)) {
+						dumpster = dumpsters.get(id);
+						dumpster = new Dumpster(id, dumpster.getMaxCapacity(), dumpster.getType(), trashQuantity);
+						dumpsters.put(id, dumpster);
+					} else {
+						dumpster = new Dumpster(id);
+						dumpsters.put(id, dumpster);
+						this.lastMessage = "A" + dumpster.getTypeName() + " was created with ID " + id;
+						setChanged();
+						notifyObservers();
+					}					
+				}		
+			}
+		} /*else if (subject instanceof TCPServer) {
 			if(((TCPServer) subject).getInObj() instanceof String) {			
 				StringTokenizer st = new StringTokenizer((String) ((TCPServer) subject).getInObj());
 				int id = Integer.parseInt(st.nextToken());
@@ -219,6 +222,21 @@ public class ServerController extends Observable implements Observer {
 				
 				drivers.put(id, new Driver(id, pos, route));
 			}
+		}*/
+	}
+	
+	/**
+	 * Convert a string to an dumpster type
+	 * @param type String with dumpster type name
+	 * @return A DumpsterType object
+	 */
+	private DumpsterType convertDumpsterType(String type) {
+		if(type.equals("CAN")) {
+			return DumpsterType.CAN;
+		} else if (type.equals("STATION")) {
+			return DumpsterType.STATION;
+		} else {
+			return DumpsterType.UNKNOW;
 		}
 	}
 	

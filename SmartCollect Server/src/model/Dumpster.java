@@ -9,7 +9,6 @@ public class Dumpster implements Serializable {
 	private static final long serialVersionUID = 5955008319878533125L;
 	
 	private int idNumber;
-	private int regionIdNumber;
 	private double trashQuantity, maxCapacity;
 	private DumpsterType type;
 	
@@ -19,10 +18,23 @@ public class Dumpster implements Serializable {
 	 */
 	public Dumpster(int idNumber) {
 		this.idNumber = idNumber;
-		this.regionIdNumber = -1;
 		this.trashQuantity = -1;
 		this.maxCapacity = -1;
 		this.type = DumpsterType.UNKNOW;
+	}
+	
+	/**
+	 * Constructs a new Dumpster
+	 * @param idNumber Dumpster id.
+	 * @param regionIdNumber Dumpster region id.
+	 * @param maxCapacity Dumpster max capacity.
+	 * @param type Dumpster type.
+	 */
+	public Dumpster(int idNumber, double maxCapacity, DumpsterType type) { 
+		this.idNumber = idNumber;
+		this.trashQuantity = 0;
+		this.maxCapacity = maxCapacity;
+		this.type = type;
 	}
 	
 	/**
@@ -33,9 +45,8 @@ public class Dumpster implements Serializable {
 	 * @param maxCapacity Dumpster max capacity.
 	 * @param type Dumpster type.
 	 */
-	public Dumpster(int idNumber, int regionIdNumber, double trashQuantity, double maxCapacity, DumpsterType type) { 
+	public Dumpster(int idNumber, double maxCapacity, DumpsterType type, double trashQuantity) { 
 		this.idNumber = idNumber;
-		this.regionIdNumber = regionIdNumber;
 		this.trashQuantity = trashQuantity;
 		this.maxCapacity = maxCapacity;
 		this.type = type;
@@ -55,14 +66,6 @@ public class Dumpster implements Serializable {
 	 */
 	public int getIdNumber() {
 		return idNumber;		
-	}
-	
-	/**
-	 * Returns dumpster region id.
-	 * @return Dumpster region id.
-	 */
-	public int getRegionIdNumber() {
-		return regionIdNumber;
 	}
 
 	/**

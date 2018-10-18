@@ -49,7 +49,7 @@ public class DumpsterController {
      * @throws InterruptedException If the thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
      */
     public void turnClientOn(int serverPort, String serverIP) throws UnknownHostException, SocketException, InterruptedException {
-    	runnableUdpClient = new UDPClient(serverPort, serverIP, SCMProtocol.CREATE + " " + SCMProtocol.DUMPSTER + " " + dumpster.toString());
+    	runnableUdpClient = new UDPClient(serverPort, serverIP, SCMProtocol.CREATE + " " + dumpster.toString());
 		Thread threadClient =  new Thread(runnableUdpClient);		
 		threadClient.start();
 		Thread.sleep(50);

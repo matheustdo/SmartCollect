@@ -53,9 +53,6 @@ public class ServerMainFxmlController implements Initializable, Observer {
     
     @FXML
     private TableColumn<Dumpster, Integer> dumpstersIdColumn;
-    
-    @FXML
-    private TableColumn<Dumpster, Integer> dumpstersRegionColumn;
 
     @FXML
     private TableColumn<Dumpster, String> dumpstersTypeColumn;
@@ -138,9 +135,8 @@ public class ServerMainFxmlController implements Initializable, Observer {
 			public void run() {
 	            	ipNumberLabel.setText(serverController.getServerIp() + " - " + serverController.getServerHostName());
 	        		udpPortNumberLabel.setText(Integer.toString(serverController.getUdpServerPort()));
-	        		tcpPortNumberLabel.setText(Integer.toString(serverController.getTcpServerPort()));
-	            	dumpstersIdColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getIdNumber()).asObject());            	
-	            	dumpstersRegionColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getRegionIdNumber()).asObject());
+	        		tcpPortNumberLabel.setText(Integer.toString(serverController.getTcpServerPort()));	 
+	        		dumpstersIdColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getIdNumber()).asObject());
 	            	dumpstersTypeColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTypeName()));
 	            	dumpstersLevelColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashPercentage()) + "%"));
 	            	dumpstersQuantityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashQuantity()) + "l"));
@@ -152,7 +148,7 @@ public class ServerMainFxmlController implements Initializable, Observer {
             		serverController.updateDumpstersCounters();
             		Platform.runLater(new Runnable() {
             		    @Override
-            		    public void run() {
+            		    public void run() {            		    	
                     		trashCansQuantityLabel.setText(Integer.toString(serverController.getTrashCansQuantity()));
                     		transferStationsQuantityLabel.setText(Integer.toString(serverController.getTransferStationsQuantity()));
                     		driversQuantityLabel.setText(Integer.toString(serverController.getDriversQuantity()));
@@ -163,7 +159,7 @@ public class ServerMainFxmlController implements Initializable, Observer {
 						dumpstersTableView.setItems(dumpstersOl);		
 						driversOl = FXCollections.observableArrayList(serverController.getDriversList());
 						driversTableView.setItems(driversOl);
-						Thread.sleep(500);
+						Thread.sleep(250);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}            		
