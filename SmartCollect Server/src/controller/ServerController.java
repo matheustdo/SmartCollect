@@ -28,6 +28,8 @@ import model.Driver;
 import model.Dumpster;
 import model.DumpsterType;
 import model.SCMProtocol;
+import util.MulticastPublisher;
+import util.MulticastReceiver;
 import util.TCPServer;
 import util.UDPServer;
 
@@ -37,14 +39,17 @@ import util.UDPServer;
 public class ServerController extends Observable implements Observer {
 	private int udpServerPort,
 				tcpServerPort,
+				multicastPort,
 				trashCansQuantity,
 				transferStationsQuantity,
 				minimunTrashPercentage;
 	private String serverIp,
+				   multicastIp,
 				   lastMessage,
 				   areaId;
 	private UDPServer runnableUdpServer;
 	private TCPServer runnableTcpServer;
+	private MulticastReceiver runnableMulticastReceiver;
 	private Map<Integer, Dumpster> dumpsters;
 	private Map<Integer, Driver> drivers;
 	private final static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -54,8 +59,10 @@ public class ServerController extends Observable implements Observer {
 	 */
 	public ServerController() {
 		this.serverIp = "localhost";
+		this.multicastIp = "230.0.0.0";
 		this.udpServerPort = 4065;
 		this.tcpServerPort = 4066;
+		this.multicastPort = 5000;
 		this.trashCansQuantity = 0;
 		this.transferStationsQuantity = 0;
 		this.minimunTrashPercentage = 80;
@@ -67,10 +74,9 @@ public class ServerController extends Observable implements Observer {
 	
 	/**
 	 * Turns on udp server.
-	 * @throws UnknownHostException Indicates that the IP address of a host could not be determined.
-	 * @throws SocketException Indicates that there is an error creating or accessing a Socket.
+	 * @throws IOException 
 	 */
-	public void turnUdpServerOn() throws UnknownHostException, SocketException {
+	public void turnUdpServerOn() throws IOException {
 		runnableUdpServer = new UDPServer(udpServerPort, serverIp);
 		Thread threadUDPServer =  new Thread(runnableUdpServer);
 		threadUDPServer.start();
@@ -89,11 +95,34 @@ public class ServerController extends Observable implements Observer {
 	}
 	
 	/**
+	 * Turns on multicasting
+	 * @throws IOException Signals that an I/O exception of some sort has occurred.
+	 */
+	public void turnMulticastReceiverOn() throws IOException {
+		runnableMulticastReceiver = new MulticastReceiver(multicastPort, multicastIp);
+		Thread threadMulticastReceiver =  new Thread(runnableMulticastReceiver);
+		threadMulticastReceiver.start();
+	}
+
+	private void sendMulticastMessage(String message) throws IOException {
+		MulticastPublisher m = new MulticastPublisher();
+		m.multicast(message, multicastIp, multicastPort);
+	}	
+	
+	/**
 	 * Returns the server ip.
 	 * @return Server ip.
 	 */
 	public String getServerIp() {		
 		return runnableUdpServer.getServerAdress();
+	}
+	
+	/**
+	 * Returns the multicast group ip.
+	 * @return Multicast group ip.
+	 */
+	public String getMulticastIp() {
+		return multicastIp;
 	}
 	
 	/**
@@ -121,6 +150,14 @@ public class ServerController extends Observable implements Observer {
 	}
 	
 	/**
+	 * Returns the multicasting port.
+	 * @return Multicast port.
+	 */
+	public int getMulticastPort() {
+		return multicastPort;
+	}
+	
+	/**
 	 * Returns a hashmap that contains all dumpsters.
 	 * @return Hashmap with all dumpsters.
 	 */
@@ -141,10 +178,10 @@ public class ServerController extends Observable implements Observer {
 		
 		FileWriter fw = new FileWriter(file.getAbsoluteFile());
         BufferedWriter bw = new BufferedWriter(fw);
-        bw.write("#SmartCollect server properties\r\n" + "server-ip: " + serverIp +
-        		 "\r\nudp-server-port: " + Integer.toString(udpServerPort) + "\r\ntcp-server-port: " +
-        		 Integer.toString(tcpServerPort) + "\r\nminimun-trash-percentage: " + minimunTrashPercentage +
-        		 "\r\nserver-area-id: " + areaId);
+        bw.write("#SmartCollect server properties\r\n" + "server-ip: " + serverIp + "\r\nmulticast-ip: " +
+        		 multicastIp + "\r\nudp-server-port: " + Integer.toString(udpServerPort) + "\r\ntcp-server-port: " +
+        		 Integer.toString(tcpServerPort) + "\r\nmulticast-port: " + Integer.toString(multicastPort) + 
+        		 "\r\nminimun-trash-percentage: " + minimunTrashPercentage + "\r\nserver-area-id: " + areaId);
         bw.close();
         fw.close();
 	}
@@ -164,10 +201,14 @@ public class ServerController extends Observable implements Observer {
             br.readLine();
             String ipLine = br.readLine().replaceAll(" ", "");
             serverIp = ipLine.replace("server-ip:", "");
-            String udpPortLine = br.readLine().replaceAll(" ", "");
+            String multicastIpLine = br.readLine().replaceAll(" ", "");
+            multicastIp = multicastIpLine.replace("multicast-ip:", "");
+            String udpPortLine = br.readLine().replaceAll(" ", "");            
             udpServerPort = Integer.parseInt(udpPortLine.replace("udp-server-port:", ""));
             String tcpPortLine = br.readLine().replaceAll(" ", "");
             tcpServerPort = Integer.parseInt(tcpPortLine.replace("tcp-server-port:", ""));
+            String multicastPortLine = br.readLine().replaceAll(" ", "");
+            multicastPort = Integer.parseInt(multicastPortLine.replace("multicast-port:", ""));
             String minimunTrashLine = br.readLine().replaceAll(" ", "");
             minimunTrashPercentage = Integer.parseInt(minimunTrashLine.replace("minimun-trash-percentage:", ""));
             String areaIdLine = br.readLine().replaceAll(" ", "");

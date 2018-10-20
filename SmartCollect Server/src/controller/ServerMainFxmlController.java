@@ -110,7 +110,13 @@ public class ServerMainFxmlController implements Initializable, Observer {
 			serverController.turnTcpServerOn();	
 			logTextArea.appendText(Log.server("TCP server has initialized at " + 
 					   serverController.getServerIp() + ":" +
-					   serverController.getTcpServerPort()) + "\n");			
+					   serverController.getTcpServerPort()) + "\n");
+			logTextArea.appendText(Log.server("Starting multicast receiver" + "\n"));
+			serverController.turnMulticastReceiverOn();
+			logTextArea.appendText(Log.server("Multicasting initialized at " + 
+					   serverController.getMulticastIp() + ":" +
+					   serverController.getMulticastPort()) + "\n");
+			
 		} catch (IOException | ClassNotFoundException e) {
 			logTextArea.appendText(Log.serverError(printStackTrace(e) + "\n"));
 			e.printStackTrace();
