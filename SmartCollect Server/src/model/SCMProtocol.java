@@ -8,4 +8,6 @@ public final class SCMProtocol {
 	public static final int UPDATE = 1;
 	public static final int DELETE = 2;
 	public static final int PROCESS = 3;
+	public static final int INFO = 4;
+	public static final int HELP = 5;
 }

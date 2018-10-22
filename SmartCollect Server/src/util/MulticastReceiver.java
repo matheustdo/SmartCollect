@@ -4,14 +4,16 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.Observable;
 
 /**
  * @author Matheus Teles
  */
-public class MulticastReceiver implements Runnable {
-	protected MulticastSocket socket;
-    protected byte[] buf = new byte[256];
-    InetAddress multicastIP;
+public class MulticastReceiver extends Observable implements Runnable {
+	private MulticastSocket socket;
+	private byte[] buf = new byte[256];
+    private InetAddress multicastIP;
+    private String receivedStr;
     
     /**
      * Constructor for MulticastReceiver
@@ -22,6 +24,7 @@ public class MulticastReceiver implements Runnable {
     public MulticastReceiver(int multicastPort, String multicastIP) throws IOException {
     	this.multicastIP = InetAddress.getByName(multicastIP);
     	this.socket = new MulticastSocket(multicastPort);
+    	receivedStr = new String();
     }    
     
     /**
@@ -34,16 +37,20 @@ public class MulticastReceiver implements Runnable {
 	        while (true) {
 	            DatagramPacket packet = new DatagramPacket(buf, buf.length);
 	            socket.receive(packet);
-	            String received = new String(packet.getData(), 0, packet.getLength());
-	            System.out.println(received);
-	            if ("end".equals(received)) {
-	                break;
-	            }	            
+	            receivedStr = new String(packet.getData(), 0, packet.getLength());
+	            setChanged();
+				notifyObservers();
 	        }
-	        socket.leaveGroup(multicastIP);
-            socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}        
 	}
+
+	/**
+	 * Get received string.
+	 * @return Received string.
+	 */
+	public String getReceivedStr() {
+		return receivedStr;
+	}	
 }

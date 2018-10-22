@@ -2,6 +2,7 @@ package controller;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -10,8 +11,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ import java.util.StringTokenizer;
 import model.Driver;
 import model.Dumpster;
 import model.DumpsterType;
+import model.Helper;
 import model.SCMProtocol;
 import util.MulticastPublisher;
 import util.MulticastReceiver;
@@ -47,9 +50,11 @@ public class ServerController extends Observable implements Observer {
 				   multicastIp,
 				   lastMessage,
 				   areaId;
+	private boolean driverStatus;
 	private UDPServer runnableUdpServer;
 	private TCPServer runnableTcpServer;
 	private MulticastReceiver runnableMulticastReceiver;
+	private Helper helper;
 	private Map<Integer, Dumpster> dumpsters;
 	private Map<Integer, Driver> drivers;
 	private final static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -68,6 +73,8 @@ public class ServerController extends Observable implements Observer {
 		this.minimunTrashPercentage = 80;
 		this.areaId = "0";
 		this.lastMessage = "";
+		this.helper = null;
+		this.driverStatus = false;
 		this.dumpsters = new HashMap<Integer, Dumpster>();
 		this.drivers = new HashMap<Integer, Driver>();
 	}
@@ -95,15 +102,21 @@ public class ServerController extends Observable implements Observer {
 	}
 	
 	/**
-	 * Turns on multicasting
+	 * Turns on multicasting.
 	 * @throws IOException Signals that an I/O exception of some sort has occurred.
 	 */
 	public void turnMulticastReceiverOn() throws IOException {
 		runnableMulticastReceiver = new MulticastReceiver(multicastPort, multicastIp);
 		Thread threadMulticastReceiver =  new Thread(runnableMulticastReceiver);
 		threadMulticastReceiver.start();
+		runnableMulticastReceiver.addObserver(this);
 	}
 
+	/**
+	 * Send a multicast message.
+	 * @param message Message.
+	 * @throws IOException Signals that an I/O exception of some sort has occurred.
+	 */
 	private void sendMulticastMessage(String message) throws IOException {
 		MulticastPublisher m = new MulticastPublisher();
 		m.multicast(message, multicastIp, multicastPort);
@@ -224,6 +237,7 @@ public class ServerController extends Observable implements Observer {
 			if(((UDPServer) subject).getObj() instanceof String) {
 				StringTokenizer st = new StringTokenizer(((UDPServer) subject).getObj().toString());
 				int action = Integer.parseInt(st.nextToken());
+				
 				// The first object received creates a new dumpster
 				if(action == SCMProtocol.CREATE) {
 					int id = Integer.parseInt(st.nextToken());
@@ -235,6 +249,7 @@ public class ServerController extends Observable implements Observer {
 					setChanged();
 					notifyObservers();
 				} else if (action == SCMProtocol.UPDATE){
+					// Updates a dumpster
 					int id = Integer.parseInt(st.nextToken());
 					Double trashQuantity = Double.parseDouble(st.nextToken());
 					Dumpster dumpster;
@@ -250,7 +265,20 @@ public class ServerController extends Observable implements Observer {
 						setChanged();
 						notifyObservers();
 					}					
-				}		
+				} else if(action == SCMProtocol.INFO) {
+					// Receive server info to select the helper
+					String helperArea = st.nextToken();
+					int helperTrashCansQuantity = Integer.parseInt(st.nextToken());
+					String helperIp = st.nextToken();
+					int helperPort = Integer.parseInt(st.nextToken());
+					Helper h = new Helper(helperArea, helperTrashCansQuantity, helperIp, helperPort);
+					
+					if(helper == null) {
+						helper = h;
+					} else {
+						selectBestHelper(h);
+					}
+				}
 			}
 		} else if (subject instanceof TCPServer) {
 			if(((TCPServer) subject).getInObj() instanceof String) {		
@@ -271,9 +299,69 @@ public class ServerController extends Observable implements Observer {
 					}
 					
 					drivers.put(id, new Driver(id, pos, route, status));
+					
+					if(status.equals("false")) {
+						try {
+							// Sends a help message
+							sendMulticastMessage(SCMProtocol.HELP + " " + areaId + " " + serverIp + " " + udpServerPort);
+							driverStatus = false;
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					} else {
+						driverStatus = true;
+					}
+				}
+			}
+		} else if (subject instanceof MulticastReceiver) {
+			StringTokenizer st = new StringTokenizer(((MulticastReceiver) subject).getReceivedStr());
+			int action = Integer.parseInt(st.nextToken());
+			if(action == SCMProtocol.HELP) {
+				String helpAreaId = st.nextToken();
+				
+				if(!helpAreaId.equals(areaId)) {
+					String helpServerIp = st.nextToken();
+					int helpUdpServerPort = Integer.parseInt(st.nextToken());
+					
+					try {
+						sendServerInfo(helpServerIp, helpUdpServerPort);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
+	}	
+	
+	/**
+	 * Select the best helper.
+	 * @param h Helper to compare.
+	 */
+	private void selectBestHelper(Helper h) {
+		if(helper.getTrashCansQuantity() < h.getTrashCansQuantity()) {
+			helper = h;			
+		}
+	}
+	
+	/**
+	 * Send current server info.
+	 * @param serverIp Help server ip.
+	 * @param Port Help server port.
+	 * @throws IOException 
+	 */
+	private void sendServerInfo(String helpIp, int helpPort) throws IOException {
+		DatagramSocket socket = new DatagramSocket();
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        
+        DatagramPacket datagramPacket;
+        /* Send output object */
+    	oos.writeObject(SCMProtocol.INFO + " " + areaId + " " + trashCansQuantity + " " + serverIp + " " + udpServerPort);
+        oos.close();
+        byte[] objData = baos.toByteArray();
+    	datagramPacket = new DatagramPacket(objData, objData.length, InetAddress.getByName(helpIp), helpPort);
+        socket.send(datagramPacket);
+        socket.close();
 	}
 	
 	/**
@@ -491,14 +579,14 @@ public class ServerController extends Observable implements Observer {
 			}
 		}
 		
-		/* Reset counters variables */
+		/* Reset counters variables 
 		if(!restDumpstersList.isEmpty()) {
 			before = lastPrioritized;
 			closer =  restDumpstersList.get(0).getIdNumber();
 			closerIndex = 0;
-		}		
+		} */
 
-		/* Plans the route to the unpriotirized dumps */
+		/* Plans the route to the unpriotirized dumps 
 		while(!restDumpstersList.isEmpty()) {
 			for(int j = 0; j < restDumpstersList.size(); j++) {
 				Dumpster dumpster = restDumpstersList.get(j);
@@ -521,7 +609,7 @@ public class ServerController extends Observable implements Observer {
 					closerIndex = 0;
 				}
 			}
-		}
+		}*/
 		
 		return route;		
 	}
