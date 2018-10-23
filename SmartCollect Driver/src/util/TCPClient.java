@@ -48,8 +48,8 @@ public class TCPClient extends Observable implements Runnable {
 				setChanged();
 				notifyObservers();
 				/* Close socket and sleep thread */
-				socket.close();
-				Thread.sleep(1000);				
+				socket.close();			
+				Thread.sleep(1000);
 			} catch (IOException | ClassNotFoundException | InterruptedException e) {
 				e.printStackTrace();
 			}			

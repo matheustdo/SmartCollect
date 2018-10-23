@@ -1,0 +1,42 @@
+[23/10/2018] [02:44:30] [SERVER THREAD/INFO]: Loading properties
+[23/10/2018] [02:44:30] [SERVER THREAD/INFO]: Properties loaded
+[23/10/2018] [02:44:30] [SERVER THREAD/INFO]: Starting UDP server
+[23/10/2018] [02:44:30] [SERVER THREAD/INFO]: UDP server has initialized at 127.0.0.1:4065
+[23/10/2018] [02:44:30] [SERVER THREAD/INFO]: Starting TCP server
+[23/10/2018] [02:44:30] [SERVER THREAD/INFO]: TCP server has initialized at 127.0.0.1:4066
+[23/10/2018] [02:44:30] [SERVER THREAD/INFO]: Starting multicast receiver
+[23/10/2018] [02:44:30] [SERVER THREAD/INFO]: Multicasting initialized at 230.0.0.1:5000
+[23/10/2018] [02:44:36] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:04] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:05] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:06] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:07] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:08] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:09] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:10] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:11] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:12] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:13] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:14] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:15] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:16] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:17] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:18] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:19] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:21] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:22] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:23] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:24] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:25] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:26] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:27] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:28] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:29] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:30] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:31] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:32] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:33] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:34] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:35] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:36] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [02:45:43] [SERVER THREAD/INFO]: Closing server

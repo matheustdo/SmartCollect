@@ -15,6 +15,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,7 +58,8 @@ public class ServerController extends Observable implements Observer {
 	private MulticastReceiver runnableMulticastReceiver;
 	private Helper helper;
 	private Map<Integer, Dumpster> dumpsters;
-	private Map<Integer, Driver> drivers;
+	private Map<String, Driver> drivers;
+	private Map<String, Helper> supporting;
 	private final static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
 	/**
@@ -77,7 +79,9 @@ public class ServerController extends Observable implements Observer {
 		this.helper = null;
 		this.driverStatus = false;		
 		this.dumpsters = new HashMap<Integer, Dumpster>();
-		this.drivers = new HashMap<Integer, Driver>();
+		this.drivers = new HashMap<String, Driver>();
+		this.supporting = new HashMap<String, Helper>();
+		new HashMap<String, Helper>();
 	}
 	
 	/**
@@ -268,21 +272,18 @@ public class ServerController extends Observable implements Observer {
 					}					
 				} else if(action == SCMProtocol.INFO) {
 					// Receive server info to select the helper if the server wants a driver
+					System.out.println("Entrando no protocolo udp.info");
 					if(!driverStatus) {
 						String helperArea = st.nextToken();
 						int helperTrashCansQuantity = Integer.parseInt(st.nextToken());
 						String helperIp = st.nextToken();
 						int helperPort = Integer.parseInt(st.nextToken());
 						Helper h = new Helper(helperArea, helperTrashCansQuantity, helperIp, helperPort);
-						
-						if(helper == null) {
-							helper = h;
-						} else {
-							selectBestHelper(h);
-						}
-						
+						System.out.println("Helper: " + helperArea + " " +helperTrashCansQuantity+ " " +helperIp+ " " +helperPort);
+						selectBestHelper(h);
+						System.out.println("Best helper selecionado: " + helper.getArea());
 						try {
-							sendTcpMessage(SCMProtocol.INFO + " " + serverIp + " " + 
+							sendTcpMessage(SCMProtocol.INFO + " " + areaId + " " + serverIp + " " + 
 										   tcpServerPort, helper.getIp(), helper.getPort());
 						} catch (IOException e) {
 							e.printStackTrace();
@@ -296,46 +297,85 @@ public class ServerController extends Observable implements Observer {
 				int action = Integer.parseInt(st.nextToken());
 				
 				if(action == SCMProtocol.PROCESS) {
-					int id = Integer.parseInt(st.nextToken());
+					String id = st.nextToken();
 					int pos = Integer.parseInt(st.nextToken());
 					String status = st.nextToken();
 					String route = getRoute(pos);
-					runnableTcpServer.setOutObj(SCMProtocol.UPDATE + " " + route);
 					
-					if (!drivers.containsKey(id)) {
-						this.lastMessage = "A driver was created at region id " + id;
-						setChanged();
-						notifyObservers();
-					}
-					
-					drivers.put(id, new Driver(id, pos, route, status, runnableTcpServer.getClientIp(), 
-											   runnableTcpServer.getClientPort()));
-					
-					if(status.equals("false")) {
+					for(Helper h:getSupportingList()) {
 						try {
-							// Sends a help request
-							sendMulticastMessage(SCMProtocol.HELP + " " + areaId + " " + serverIp + 
-												 " " + udpServerPort);
-							driverStatus = false;
-						} catch (IOException e) {
+							System.out.println("Area do helper: " + h.getArea());
+							StringTokenizer ss = new StringTokenizer(getSupportingRoute(h.getIp(), h.getPort(), areaId, pos, status));
+							action = Integer.parseInt(ss.nextToken());
+							
+							if(action == SCMProtocol.UPDATE) {
+								while(ss.hasMoreTokens()) {
+									route += ss.nextToken() + h.getArea() + " ";
+								}
+							}
+						} catch (ClassNotFoundException | IOException e) {
 							e.printStackTrace();
 						}
-					} else {
-						driverStatus = true;
-						helper = null;
+					}
+					
+					runnableTcpServer.setOutObj(SCMProtocol.UPDATE + " " + route);				
+					
+					System.out.println(id.equals(areaId));
+					if(id.equals(areaId)) {
+						if (!drivers.containsKey(id)) {
+							this.lastMessage = "A driver was created at region id " + id;
+							setChanged();
+							notifyObservers();
+						}
+						System.out.println("Criando a lixeira: " + id + " " + pos + " " + status);
+						drivers.put(id, new Driver(id, pos, route, status));
+						
+						System.out.println("-Situacao do helper: " + (helper != null));
+						System.out.println("+Situação do status: " + status.equals("true"));
+						if(status.equals("false") && helper == null) {
+							try {
+								// Sends a help request
+								System.out.println("Enviando multicast.help");
+								sendMulticastMessage(SCMProtocol.HELP + " " + areaId + " " + serverIp + 
+													 " " + udpServerPort);
+								if(!supporting.isEmpty()) {
+									for(Helper h:getSupportingList()) {
+										sendTcpMessage(SCMProtocol.UPDATE + "", h.getIp(), h.getPort());
+									}		
+									supporting.clear();
+								}
+								driverStatus = false;
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						} else if (status.equals("true")) {
+							driverStatus = true;
+							if (helper != null) {
+								try {
+									sendTcpMessage(SCMProtocol.DELETE + " " + areaId, helper.getIp(), helper.getPort());
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+								helper = null;				
+							 } 
+						 }
 					}
 				} else if (action == SCMProtocol.INFO) {
+					String area = st.nextToken();
 					String ip = st.nextToken();
 					int port = Integer.parseInt(st.nextToken());
 					
-					List<Driver> driversList = getDriversList();
-					
-					for(Driver d:driversList) {
-						try {
-							sendTcpMessage(SCMProtocol.CREATE + " " + ip + " " + port, d.getIp().getHostAddress(), d.getPort());
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+					supporting.put(area, new Helper(area, 0, ip, port));
+				} else if(action == SCMProtocol.DELETE) {
+					String area = st.nextToken();
+					supporting.remove(area);
+				} else if(action == SCMProtocol.UPDATE) {
+					// Sends a help request
+					try {
+						sendMulticastMessage(SCMProtocol.HELP + " " + areaId + " " + serverIp + 
+											 " " + udpServerPort);
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
 				}
 			}
@@ -344,7 +384,6 @@ public class ServerController extends Observable implements Observer {
 			int action = Integer.parseInt(st.nextToken());
 			if(action == SCMProtocol.HELP) {
 				String helpAreaId = st.nextToken();
-				
 				// Sends help to another area if the driver status is true
 				if(!helpAreaId.equals(areaId) && driverStatus) {
 					String helpServerIp = st.nextToken();
@@ -362,13 +401,42 @@ public class ServerController extends Observable implements Observer {
 	}
 	
 	/**
+	 * Gets a supporting route.
+	 * @param serverIP
+	 * @param serverPort
+	 * @param id
+	 * @param position
+	 * @param status
+	 * @return Route.
+	 * @throws UnknownHostException Unknown host.
+	 * @throws IOException IOException Signals that an I/O exception of some sort has occurred.
+	 * @throws ClassNotFoundException Class not found.
+	 */
+	private String getSupportingRoute(String serverIP, int serverPort, String id, int position, String status) throws UnknownHostException, IOException, ClassNotFoundException {
+		/* Connects to server socket */
+		Socket socket = new Socket(InetAddress.getByName(serverIP), serverPort);
+		/* Send output object to server */
+		ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+		oos.writeObject(SCMProtocol.PROCESS + " " + id + " " + position + " " + status);
+		/* Receive input object from server */
+		ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+		String inObj = (String) ois.readObject();
+		/* Update observers */
+		setChanged();
+		notifyObservers();
+		/* Close socket and sleep thread */
+		socket.close();	
+		return inObj;
+	}
+	
+	/**
 	 * Select the best helper.
 	 * @param h Helper to compare.
 	 */
 	private void selectBestHelper(Helper h) {
-		if(helper.getTrashCansQuantity() < h.getTrashCansQuantity()) {
-			helper = h;			
-		}
+		if(helper == null || helper.getTrashCansQuantity() > h.getTrashCansQuantity()) {
+			this.helper = h;			
+		}		
 	}
 	
 	/**
@@ -445,14 +513,29 @@ public class ServerController extends Observable implements Observer {
 	 * @return A drivers list.
 	 */
 	public List<Driver> getDriversList() {
-		Set<Integer> keys = drivers.keySet();
+		Set<String> keys = drivers.keySet();
 		List<Driver> driversList = new ArrayList<Driver>();
-		for(Integer key : keys) {
+		for(String key : keys) {
 			if(key != null) {
 				driversList.add(drivers.get(key));
 			}
 		}
 		return driversList;
+	}
+	
+	/**
+	 * Returns a list that contains all current supporting servers.
+	 * @return A servers list.
+	 */
+	public List<Helper> getSupportingList() {
+		Set<String> keys = supporting.keySet();
+		List<Helper> supportingList = new ArrayList<Helper>();
+		for(String key : keys) {
+			if(key != null) {
+				supportingList.add(supporting.get(key));
+			}
+		}
+		return supportingList;
 	}
 	
 	/**
@@ -589,7 +672,7 @@ public class ServerController extends Observable implements Observer {
 		List<Dumpster> dumpstersList = getDumpstersList();
 		List<Dumpster> restDumpstersList = new ArrayList<Dumpster>();
 		String route = new String();
-		int closer = 0, closerIndex = 0, before = pos, lastPrioritized = pos;
+		int closer = 0, closerIndex = 0, before = pos; //lastPrioritized = pos;
 		
 		if(!dumpstersList.isEmpty()) {
 			closer =  dumpstersList.get(0).getIdNumber();
@@ -611,7 +694,7 @@ public class ServerController extends Observable implements Observer {
 				before = closer;
 				if(closerDumpster.getType().equals(DumpsterType.CAN) && closerDumpster.getTrashPercentage() >= minimunTrashPercentage) {
 					route += closer + " ";
-					lastPrioritized = closer;
+					//lastPrioritized = closer;
 				} else {
 					/* Adds unpriotirizeds dumpsters on another list */
 					restDumpstersList.add(closerDumpster);

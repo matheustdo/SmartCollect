@@ -76,7 +76,7 @@ public class ServerMainFxmlController implements Initializable, Observer {
     private TableView<Driver> driversTableView;
 
     @FXML
-    private TableColumn<Driver, Integer> driversIdColumn;
+    private TableColumn<Driver, String> driversIdColumn;
 
     @FXML
     private TableColumn<Driver, Integer> driversPositionColumn;
@@ -158,7 +158,7 @@ public class ServerMainFxmlController implements Initializable, Observer {
 	            	dumpstersLevelColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashPercentage()) + "%"));
 	            	dumpstersQuantityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getTrashQuantity()) + "l"));
 	            	dumpstersCapacityColumn.setCellValueFactory(data -> new SimpleStringProperty(decimalFormat.format(data.getValue().getMaxCapacity())+ "l"));
-	            	driversIdColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getId()).asObject());
+	            	driversIdColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getId()));
 	            	driversPositionColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getPos()).asObject());
 	            	driversRouteColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getRoute()));
 	            	driversStatusColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getStatus()));

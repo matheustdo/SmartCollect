@@ -52,7 +52,7 @@ public class DriverController extends Observable implements Observer {
 				route = ((TCPClient) o).getObjReceived().toString().replaceFirst(action + " ", "");
 				setChanged();
 				notifyObservers();
-			}			
+			}
 		}
 	}
 	

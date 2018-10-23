@@ -1,17 +1,13 @@
 package model;
 
-import java.net.InetAddress;
-
 /**
  * @author Matheus Teles
  */
 public class Driver {
-	private int id;
+	private String id;
 	private int pos;
 	private String route;
 	private String status;
-	private InetAddress ip;
-	private int port;
 	
 	/**
 	 * Constructs a new Driver.
@@ -19,20 +15,18 @@ public class Driver {
 	 * @param pos Driver position.
 	 * @param route Driver route.
 	 */
-	public Driver(int id, int pos, String route, String status, InetAddress ip, int port) {
+	public Driver(String id, int pos, String route, String status) {
 		this.id = id;
 		this.pos = pos;
 		this.route = route;
 		this.status = status;
-		this.ip = ip;
-		this.port = port;	
 	}
-
+	
 	/**
 	 * Get the driver id.
 	 * @return Driver id.
 	 */
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 	
@@ -58,21 +52,5 @@ public class Driver {
 	 */
 	public String getStatus() {
 		return status;
-	}
-	
-	/**
-	 * Get ip.
-	 * @return Ip.
-	 */
-	public InetAddress getIp() {
-		return ip;
-	}
-
-	/**
-	 * Get port.
-	 * @return Port.
-	 */
-	public int getPort() {
-		return port;
 	}
 }

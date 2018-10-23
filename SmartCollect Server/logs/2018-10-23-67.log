@@ -1,0 +1,23 @@
+[23/10/2018] [03:45:38] [SERVER THREAD/INFO]: Loading properties
+[23/10/2018] [03:45:38] [SERVER THREAD/INFO]: Properties loaded
+[23/10/2018] [03:45:38] [SERVER THREAD/INFO]: Starting UDP server
+[23/10/2018] [03:45:38] [SERVER THREAD/INFO]: UDP server has initialized at 127.0.0.1:4067
+[23/10/2018] [03:45:38] [SERVER THREAD/INFO]: Starting TCP server
+[23/10/2018] [03:45:38] [SERVER THREAD/INFO]: TCP server has initialized at 127.0.0.1:4068
+[23/10/2018] [03:45:38] [SERVER THREAD/INFO]: Starting multicast receiver
+[23/10/2018] [03:45:38] [SERVER THREAD/INFO]: Multicasting initialized at 230.0.0.1:5000
+[23/10/2018] [03:45:56] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [03:46:17] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [03:46:18] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [03:46:19] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [03:46:20] [SERVER THREAD/INFO]: A driver was created at region id 1
+[23/10/2018] [03:46:45] [SERVER THREAD/INFO]: A driver was created at region id 1b
+[23/10/2018] [03:47:06] [SERVER THREAD/INFO]: A driver was created at region id 1b
+[23/10/2018] [03:47:07] [SERVER THREAD/INFO]: A driver was created at region id 1b
+[23/10/2018] [03:47:08] [SERVER THREAD/INFO]: A driver was created at region id 1b
+[23/10/2018] [03:47:09] [SERVER THREAD/INFO]: A driver was created at region id 1b
+[23/10/2018] [03:47:31] [SERVER THREAD/INFO]: A driver was created at region id 1b
+[23/10/2018] [03:47:32] [SERVER THREAD/INFO]: A driver was created at region id 1b
+[23/10/2018] [03:47:33] [SERVER THREAD/INFO]: A driver was created at region id 1b
+[23/10/2018] [03:47:34] [SERVER THREAD/INFO]: A driver was created at region id 1b
+[23/10/2018] [03:47:46] [SERVER THREAD/INFO]: Closing server
