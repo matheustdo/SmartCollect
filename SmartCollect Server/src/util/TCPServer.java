@@ -15,6 +15,8 @@ public class TCPServer extends Observable implements Runnable {
 	private Object inObj;
 	private Object outObj;
 	private ServerSocket serverSocket;
+	private InetAddress clientIp;
+	private int clientPort;
 	
 	/**
 	 * Constructs a new TCPServer.
@@ -25,7 +27,9 @@ public class TCPServer extends Observable implements Runnable {
 	public TCPServer(int serverPort, String serverIP) throws IOException {
 		this.serverSocket = new ServerSocket(serverPort, 50, InetAddress.getByName(serverIP));
 		this.inObj = new Object();
-		this.outObj = new Object();
+		this.outObj = null;
+		this.clientIp = null;
+		this.clientPort = 0;
 	}
 	
 	/**
@@ -36,19 +40,42 @@ public class TCPServer extends Observable implements Runnable {
 			try {
 				/* Wait for an client */ 
 				Socket clientSocket = serverSocket.accept();
+				clientIp = clientSocket.getInetAddress();
+				clientPort = clientSocket.getPort();
 				/* Receives an object from client */
 				inObj = (new ObjectInputStream(clientSocket.getInputStream())).readObject();
 				/* Process the received object */
 				setChanged();
 				notifyObservers();
 				/* Sends the object for client */
-				(new ObjectOutputStream(clientSocket.getOutputStream())).writeObject(outObj);	
+				if(outObj != null) {
+					(new ObjectOutputStream(clientSocket.getOutputStream())).writeObject(outObj);	
+				}				
 				/* Close socket */
 				clientSocket.close();
+				outObj = null;
+				clientIp = null;
+				clientPort = 0;
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}	
 		}
+	}
+
+	/**
+	 * Get client ip.
+	 * @return Client ip.
+	 */
+	public InetAddress getClientIp() {
+		return clientIp;
+	}
+
+	/**
+	 * Get client port.
+	 * @return Client port.
+	 */
+	public int getClientPort() {
+		return clientPort;
 	}
 
 	/**

@@ -74,7 +74,7 @@
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                        <children>
-                                          <TextField fx:id="driverIdTextField" disable="true" promptText="Ex: 7" text="1" />
+                                          <TextField fx:id="driverIdTextField" promptText="Ex: 7" text="1" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">

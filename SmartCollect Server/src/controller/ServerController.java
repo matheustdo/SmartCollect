@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public class ServerController extends Observable implements Observer {
 		this.areaId = "0";
 		this.lastMessage = "";
 		this.helper = null;
-		this.driverStatus = false;
+		this.driverStatus = false;		
 		this.dumpsters = new HashMap<Integer, Dumpster>();
 		this.drivers = new HashMap<Integer, Driver>();
 	}
@@ -266,18 +267,27 @@ public class ServerController extends Observable implements Observer {
 						notifyObservers();
 					}					
 				} else if(action == SCMProtocol.INFO) {
-					// Receive server info to select the helper
-					String helperArea = st.nextToken();
-					int helperTrashCansQuantity = Integer.parseInt(st.nextToken());
-					String helperIp = st.nextToken();
-					int helperPort = Integer.parseInt(st.nextToken());
-					Helper h = new Helper(helperArea, helperTrashCansQuantity, helperIp, helperPort);
-					
-					if(helper == null) {
-						helper = h;
-					} else {
-						selectBestHelper(h);
-					}
+					// Receive server info to select the helper if the server wants a driver
+					if(!driverStatus) {
+						String helperArea = st.nextToken();
+						int helperTrashCansQuantity = Integer.parseInt(st.nextToken());
+						String helperIp = st.nextToken();
+						int helperPort = Integer.parseInt(st.nextToken());
+						Helper h = new Helper(helperArea, helperTrashCansQuantity, helperIp, helperPort);
+						
+						if(helper == null) {
+							helper = h;
+						} else {
+							selectBestHelper(h);
+						}
+						
+						try {
+							sendTcpMessage(SCMProtocol.INFO + " " + serverIp + " " + 
+										   tcpServerPort, helper.getIp(), helper.getPort());
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}					
 				}
 			}
 		} else if (subject instanceof TCPServer) {
@@ -298,18 +308,34 @@ public class ServerController extends Observable implements Observer {
 						notifyObservers();
 					}
 					
-					drivers.put(id, new Driver(id, pos, route, status));
+					drivers.put(id, new Driver(id, pos, route, status, runnableTcpServer.getClientIp(), 
+											   runnableTcpServer.getClientPort()));
 					
 					if(status.equals("false")) {
 						try {
-							// Sends a help message
-							sendMulticastMessage(SCMProtocol.HELP + " " + areaId + " " + serverIp + " " + udpServerPort);
+							// Sends a help request
+							sendMulticastMessage(SCMProtocol.HELP + " " + areaId + " " + serverIp + 
+												 " " + udpServerPort);
 							driverStatus = false;
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
 					} else {
 						driverStatus = true;
+						helper = null;
+					}
+				} else if (action == SCMProtocol.INFO) {
+					String ip = st.nextToken();
+					int port = Integer.parseInt(st.nextToken());
+					
+					List<Driver> driversList = getDriversList();
+					
+					for(Driver d:driversList) {
+						try {
+							sendTcpMessage(SCMProtocol.CREATE + " " + ip + " " + port, d.getIp().getHostAddress(), d.getPort());
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -319,19 +345,21 @@ public class ServerController extends Observable implements Observer {
 			if(action == SCMProtocol.HELP) {
 				String helpAreaId = st.nextToken();
 				
-				if(!helpAreaId.equals(areaId)) {
+				// Sends help to another area if the driver status is true
+				if(!helpAreaId.equals(areaId) && driverStatus) {
 					String helpServerIp = st.nextToken();
 					int helpUdpServerPort = Integer.parseInt(st.nextToken());
 					
 					try {
-						sendServerInfo(helpServerIp, helpUdpServerPort);
+						sendUdpMessage(SCMProtocol.INFO + " " + areaId + " " + trashCansQuantity + 
+									   " " + serverIp + " " + tcpServerPort, helpServerIp, helpUdpServerPort);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				}
 			}
 		}
-	}	
+	}
 	
 	/**
 	 * Select the best helper.
@@ -344,23 +372,41 @@ public class ServerController extends Observable implements Observer {
 	}
 	
 	/**
-	 * Send current server info.
-	 * @param serverIp Help server ip.
-	 * @param Port Help server port.
-	 * @throws IOException 
+	 * Sends a tcp message.
+	 * @param message Message to send.
+	 * @param ip Destination ip.
+	 * @param port Destination port.
+	 * @throws IOException Signals that an I/O exception of some sort has occurred.
 	 */
-	private void sendServerInfo(String helpIp, int helpPort) throws IOException {
+	private void sendTcpMessage(String message, String ip, int port) throws IOException {
+		Socket socket = new Socket(InetAddress.getByName(ip), port);
+		/* Send output object to server */
+		ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+		oos.writeObject(message);
+		/* Close socket */
+		socket.close();
+	}
+	
+	/**
+	 * Sends a udp message.
+	 * @param message Message to send.
+	 * @param ip Destination ip.
+	 * @param port Destination port.
+	 * @throws IOException Signals that an I/O exception of some sort has occurred.
+	 */
+	private void sendUdpMessage(String message, String ip, int port) throws IOException {
 		DatagramSocket socket = new DatagramSocket();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         
         DatagramPacket datagramPacket;
         /* Send output object */
-    	oos.writeObject(SCMProtocol.INFO + " " + areaId + " " + trashCansQuantity + " " + serverIp + " " + udpServerPort);
+    	oos.writeObject(message);
         oos.close();
         byte[] objData = baos.toByteArray();
-    	datagramPacket = new DatagramPacket(objData, objData.length, InetAddress.getByName(helpIp), helpPort);
+    	datagramPacket = new DatagramPacket(objData, objData.length, InetAddress.getByName(ip), port);
         socket.send(datagramPacket);
+        /* Close socket */
         socket.close();
 	}
 	
