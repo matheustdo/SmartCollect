@@ -74,7 +74,7 @@ public class ServerController extends Observable implements Observer {
 		this.trashCansQuantity = 0;
 		this.transferStationsQuantity = 0;
 		this.minimunTrashPercentage = 80;
-		this.areaId = "0";
+		this.areaId = "A";
 		this.lastMessage = "";
 		this.helper = null;
 		this.driverStatus = false;		
@@ -293,7 +293,9 @@ public class ServerController extends Observable implements Observer {
 				StringTokenizer st = new StringTokenizer(((TCPServer) subject).getInObj().toString());
 				int action = Integer.parseInt(st.nextToken());
 				
-				if(action == SCMProtocol.PROCESS) {
+				if(action == SCMProtocol.CREATE) {
+					runnableTcpServer.setOutObj(SCMProtocol.INFO + " " + areaId);
+				} else if (action == SCMProtocol.PROCESS) {
 					String id = st.nextToken();
 					int pos = Integer.parseInt(st.nextToken());
 					String status = st.nextToken();

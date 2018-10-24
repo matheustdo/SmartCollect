@@ -26,9 +26,6 @@ public class DriverMainFxmlController implements Initializable, Observer {
 
     @FXML
     private TextField serverPortTextField;
-    
- 	@FXML
-    private TextField driverIdTextField;
 
     @FXML
     private TextField driverPosTextField;
@@ -49,6 +46,7 @@ public class DriverMainFxmlController implements Initializable, Observer {
     private Label routeRestLabel;
     
     private DriverController driverController = new DriverController();
+    private int position;
     
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
@@ -58,19 +56,20 @@ public class DriverMainFxmlController implements Initializable, Observer {
     
     @FXML
     void turnOnButtonAction(ActionEvent event) throws InterruptedException, IOException {
+    	position = Integer.parseInt(driverPosTextField.getText());
     	if(statusTextField.getText().equals("OFFLINE")) {
-	    	driverController.turnClientOn(Integer.parseInt(serverPortTextField.getText()), serverIpTextField.getText(), 
-	    								  driverIdTextField.getText() , driverPosTextField.getText(), !brokenChoicer.isSelected());
+	    	driverController.turnClientOn(Integer.parseInt(serverPortTextField.getText()), serverIpTextField.getText());
 	    	statusTextField.setText("ONLINE");
 	    	statusTextField.setTextFill(Color.DARKGREEN);
-	    	turnOnButton.setText("Update position");
-	    	driverIdTextField.setDisable(true);		    	
+	    	turnOnButton.setText("Update position");    	
 	    	serverIpTextField.setDisable(true);
 	    	serverPortTextField.setDisable(true);
     	} else {
-    		driverController.setTcpOutObject(driverIdTextField.getText() + " " + 
-    										 driverPosTextField.getText() + " " + !brokenChoicer.isSelected());
+    		driverController.setTcpOutObject(driverController.getId() + " " + 
+					 driverPosTextField.getText() + " " + !brokenChoicer.isSelected());
     	}
+    	
+    	    	
     }
     
     /**
@@ -78,7 +77,7 @@ public class DriverMainFxmlController implements Initializable, Observer {
      */
 	private void generateRoute() {
 		if(driverController.getRoute() != null) {
-			StringTokenizer st = new StringTokenizer(driverController.getRoute());   	
+			StringTokenizer st = new StringTokenizer(driverController.getRoute());
 			routeRestLabel.setText("");
 			
 	    	if(st.hasMoreTokens()) {
@@ -90,6 +89,14 @@ public class DriverMainFxmlController implements Initializable, Observer {
 	    	}
 		}
     }
+	
+	/**
+	 * Breaks the truck.
+	 */
+	@FXML
+    void brokenOnAction(ActionEvent event) {
+		driverController.setTcpOutObject(driverController.getId() + " " + position + " " + !brokenChoicer.isSelected());    	
+    }
 
 	/**
 	 * Updates view.
@@ -100,6 +107,7 @@ public class DriverMainFxmlController implements Initializable, Observer {
 			Platform.runLater(new Runnable() {
     		    @Override
     		    public void run() {
+    		    	driverController.setTcpOutObject(driverController.getId() + " " + position + " " + !brokenChoicer.isSelected());
     		    	generateRoute();
     		    }
     		});

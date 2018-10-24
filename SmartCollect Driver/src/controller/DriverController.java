@@ -14,6 +14,7 @@ import util.TCPClient;
 public class DriverController extends Observable implements Observer {
 	private TCPClient runnableTcpClient;
 	private String route;
+	private String id;
 	
 	/**
 	 * Turn tpc client on.
@@ -24,8 +25,8 @@ public class DriverController extends Observable implements Observer {
 	 * @throws InterruptedException Thrown when a thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
 	 * @throws IOException Signals that an I/O exception of some sort has occurred.
 	 */
-	public void turnClientOn(int serverPort, String serverIP, String id, String position, boolean status) throws InterruptedException, IOException {
-		runnableTcpClient = new TCPClient(serverPort, serverIP, SCMProtocol.PROCESS + " " + id + " " + position + " " + status);
+	public void turnClientOn(int serverPort, String serverIP) throws InterruptedException, IOException {
+		runnableTcpClient = new TCPClient(serverPort, serverIP, SCMProtocol.CREATE + "");
 		Thread threadClient =  new Thread(runnableTcpClient);		
 		threadClient.start();	
 		runnableTcpClient.addObserver(this);
@@ -48,11 +49,13 @@ public class DriverController extends Observable implements Observer {
 			StringTokenizer st = new StringTokenizer(((TCPClient) o).getObjReceived().toString());
 			int action = Integer.parseInt(st.nextToken());
 			
-			if(action == SCMProtocol.UPDATE) {
-				route = ((TCPClient) o).getObjReceived().toString().replaceFirst(action + " ", "");
-				setChanged();
-				notifyObservers();
+			if(action == SCMProtocol.INFO) {
+				id = st.nextToken();				
+			} else if (action == SCMProtocol.UPDATE) {
+				route = (((TCPClient) o).getObjReceived().toString()).replaceFirst(SCMProtocol.UPDATE + " ", "");				
 			}
+			setChanged();
+			notifyObservers();
 		}
 	}
 	
@@ -63,4 +66,12 @@ public class DriverController extends Observable implements Observer {
 	public void setTcpOutObject(String obj) {
 		runnableTcpClient.setOutObj(SCMProtocol.PROCESS + " " + obj);
 	}
+
+	/**
+	 * Gets ID.
+	 * @return ID.
+	 */
+	public String getId() {
+		return id;
+	}	
 }
