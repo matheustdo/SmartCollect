@@ -272,16 +272,13 @@ public class ServerController extends Observable implements Observer {
 					}					
 				} else if(action == SCMProtocol.INFO) {
 					// Receive server info to select the helper if the server wants a driver
-					System.out.println("Entrando no protocolo udp.info");
 					if(!driverStatus) {
 						String helperArea = st.nextToken();
 						int helperTrashCansQuantity = Integer.parseInt(st.nextToken());
 						String helperIp = st.nextToken();
 						int helperPort = Integer.parseInt(st.nextToken());
 						Helper h = new Helper(helperArea, helperTrashCansQuantity, helperIp, helperPort);
-						System.out.println("Helper: " + helperArea + " " +helperTrashCansQuantity+ " " +helperIp+ " " +helperPort);
 						selectBestHelper(h);
-						System.out.println("Best helper selecionado: " + helper.getArea());
 						try {
 							sendTcpMessage(SCMProtocol.INFO + " " + areaId + " " + serverIp + " " + 
 										   tcpServerPort, helper.getIp(), helper.getPort());
@@ -304,7 +301,6 @@ public class ServerController extends Observable implements Observer {
 					
 					for(Helper h:getSupportingList()) {
 						try {
-							System.out.println("Area do helper: " + h.getArea());
 							StringTokenizer ss = new StringTokenizer(getSupportingRoute(h.getIp(), h.getPort(), areaId, pos, status));
 							action = Integer.parseInt(ss.nextToken());
 							
@@ -318,32 +314,25 @@ public class ServerController extends Observable implements Observer {
 						}
 					}
 					
-					runnableTcpServer.setOutObj(SCMProtocol.UPDATE + " " + route);				
-					
-					System.out.println(id.equals(areaId));
+					runnableTcpServer.setOutObj(SCMProtocol.UPDATE + " " + route);
+
 					if(id.equals(areaId)) {
 						if (!drivers.containsKey(id)) {
 							this.lastMessage = "A driver was created at region id " + id;
 							setChanged();
 							notifyObservers();
 						}
-						System.out.println("Criando a lixeira: " + id + " " + pos + " " + status);
 						drivers.put(id, new Driver(id, pos, route, status));
 						
-						System.out.println("-Situacao do helper: " + (helper != null));
-						System.out.println("+Situação do status: " + status.equals("true"));
 						if(status.equals("false") && helper == null) {
 							try {
 								// Sends a help request
-								System.out.println("Enviando multicast.help");
 								sendMulticastMessage(SCMProtocol.HELP + " " + areaId + " " + serverIp + 
 													 " " + udpServerPort);
-								if(!supporting.isEmpty()) {
-									for(Helper h:getSupportingList()) {
-										sendTcpMessage(SCMProtocol.UPDATE + "", h.getIp(), h.getPort());
-									}		
-									supporting.clear();
+								for(Helper h:getSupportingList()) {
+									sendTcpMessage(SCMProtocol.UPDATE + "", h.getIp(), h.getPort());
 								}
+								supporting.clear();
 								driverStatus = false;
 							} catch (IOException e) {
 								e.printStackTrace();
@@ -356,7 +345,8 @@ public class ServerController extends Observable implements Observer {
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
-								helper = null;				
+								helper = null;		
+								//supporting.clear();
 							 } 
 						 }
 					}
@@ -371,6 +361,7 @@ public class ServerController extends Observable implements Observer {
 					supporting.remove(area);
 				} else if(action == SCMProtocol.UPDATE) {
 					// Sends a help request
+					helper = null;
 					try {
 						sendMulticastMessage(SCMProtocol.HELP + " " + areaId + " " + serverIp + 
 											 " " + udpServerPort);
@@ -421,9 +412,6 @@ public class ServerController extends Observable implements Observer {
 		/* Receive input object from server */
 		ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 		String inObj = (String) ois.readObject();
-		/* Update observers */
-		setChanged();
-		notifyObservers();
 		/* Close socket and sleep thread */
 		socket.close();	
 		return inObj;
@@ -435,7 +423,15 @@ public class ServerController extends Observable implements Observer {
 	 */
 	private void selectBestHelper(Helper h) {
 		if(helper == null || helper.getTrashCansQuantity() > h.getTrashCansQuantity()) {
-			this.helper = h;			
+			if(helper != null) {
+				try {
+					sendTcpMessage(SCMProtocol.DELETE + " " + areaId, helper.getIp(), helper.getPort());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			this.helper = h;
 		}		
 	}
 	

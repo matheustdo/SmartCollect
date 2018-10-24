@@ -1,9 +1,0 @@
-[22/10/2018] [22:16:10] [SERVER THREAD/INFO]: Loading properties
-[22/10/2018] [22:16:10] [SERVER THREAD/INFO]: Properties loaded
-[22/10/2018] [22:16:10] [SERVER THREAD/INFO]: Starting UDP server
-[22/10/2018] [22:16:10] [SERVER THREAD/INFO]: UDP server has initialized at 127.0.0.1:4065
-[22/10/2018] [22:16:10] [SERVER THREAD/INFO]: Starting TCP server
-[22/10/2018] [22:16:10] [SERVER THREAD/INFO]: TCP server has initialized at 127.0.0.1:4066
-[22/10/2018] [22:16:10] [SERVER THREAD/INFO]: Starting multicast receiver
-[22/10/2018] [22:16:10] [SERVER THREAD/INFO]: Multicasting initialized at 230.0.0.1:5000
-[22/10/2018] [22:16:15] [SERVER THREAD/INFO]: Closing server
