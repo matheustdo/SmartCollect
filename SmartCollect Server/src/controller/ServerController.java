@@ -67,7 +67,7 @@ public class ServerController extends Observable implements Observer {
 	 */
 	public ServerController() {
 		this.serverIp = "localhost";
-		this.multicastIp = "230.0.0.0";
+		this.multicastIp = "230.0.0.1";
 		this.udpServerPort = 4065;
 		this.tcpServerPort = 4066;
 		this.multicastPort = 5000;
@@ -278,6 +278,17 @@ public class ServerController extends Observable implements Observer {
 						String helperIp = st.nextToken();
 						int helperPort = Integer.parseInt(st.nextToken());
 						Helper h = new Helper(helperArea, helperTrashCansQuantity, helperIp, helperPort);
+						
+						this.lastMessage = "A helper info was received from " + helperIp + ":" + helperPort +
+										   " - area id: " + helperArea + " - trash cans quantity: " + helperTrashCansQuantity;
+						setChanged();
+						notifyObservers();						
+						try {
+							Thread.sleep(50);
+						} catch (InterruptedException e1) {
+							e1.printStackTrace();
+						}
+						
 						selectBestHelper(h);
 						try {
 							sendTcpMessage(SCMProtocol.INFO + " " + areaId + " " + serverIp + " " + 
@@ -294,8 +305,10 @@ public class ServerController extends Observable implements Observer {
 				int action = Integer.parseInt(st.nextToken());
 				
 				if(action == SCMProtocol.CREATE) {
+					// Give the server area id to driver
 					runnableTcpServer.setOutObj(SCMProtocol.INFO + " " + areaId);
 				} else if (action == SCMProtocol.PROCESS) {
+					// Process the route
 					String id = st.nextToken();
 					int pos = Integer.parseInt(st.nextToken());
 					String status = st.nextToken();
@@ -329,41 +342,84 @@ public class ServerController extends Observable implements Observer {
 						if(status.equals("false") && helper == null) {
 							try {
 								// Sends a help request
+								if(!getSupportingList().isEmpty()) {
+									this.lastMessage = "Stopping helping mode";
+									setChanged();
+									notifyObservers();
+									Thread.sleep(50);
+								}
+								
+								this.lastMessage = "Sending a help message with multicast";
+								setChanged();
+								notifyObservers();
+								
 								sendMulticastMessage(SCMProtocol.HELP + " " + areaId + " " + serverIp + 
-													 " " + udpServerPort);
+													 " " + udpServerPort);						
+								
 								for(Helper h:getSupportingList()) {
 									sendTcpMessage(SCMProtocol.UPDATE + "", h.getIp(), h.getPort());
 								}
+								
 								supporting.clear();
 								driverStatus = false;
-							} catch (IOException e) {
+							} catch (IOException | InterruptedException e) {
 								e.printStackTrace();
 							}
 						} else if (status.equals("true")) {
 							driverStatus = true;
 							if (helper != null) {
 								try {
+									this.lastMessage = "Stopping helper";
+									setChanged();
+									notifyObservers();
 									sendTcpMessage(SCMProtocol.DELETE + " " + areaId, helper.getIp(), helper.getPort());
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
-								helper = null;		
-								//supporting.clear();
+								helper = null;
 							 } 
 						 }
 					}
 				} else if (action == SCMProtocol.INFO) {
+					// Enables server helping to received server info
 					String area = st.nextToken();
 					String ip = st.nextToken();
 					int port = Integer.parseInt(st.nextToken());
 					
+					this.lastMessage = "Initializing helping to " + ip + ":" + port + " - area id: " + area;
+					setChanged();
+					notifyObservers();
+			
 					supporting.put(area, new Helper(area, 0, ip, port));
 				} else if(action == SCMProtocol.DELETE) {
+					// Stops helping to designated server
 					String area = st.nextToken();
+					Helper he = supporting.get(area);
+					
+					this.lastMessage = "Stopping helping to " + he.getIp() + ":" + he.getPort() +
+							   		   " - area id: " + he.getArea();
+					setChanged();
+					notifyObservers();
+					
 					supporting.remove(area);
 				} else if(action == SCMProtocol.UPDATE) {
 					// Sends a help request
+					this.lastMessage = "The helper was incapacitated";
+					setChanged();
+					notifyObservers();
+					
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+					
 					helper = null;
+
+					this.lastMessage = "Sending a help message with multicast";
+					setChanged();
+					notifyObservers();
+					
 					try {
 						sendMulticastMessage(SCMProtocol.HELP + " " + areaId + " " + serverIp + 
 											 " " + udpServerPort);
@@ -382,6 +438,10 @@ public class ServerController extends Observable implements Observer {
 					String helpServerIp = st.nextToken();
 					int helpUdpServerPort = Integer.parseInt(st.nextToken());
 					
+					this.lastMessage = "Sending information to give help to " + helpServerIp + ":" + helpUdpServerPort;
+					setChanged();
+					notifyObservers();
+					
 					try {
 						sendUdpMessage(SCMProtocol.INFO + " " + areaId + " " + trashCansQuantity + 
 									   " " + serverIp + " " + tcpServerPort, helpServerIp, helpUdpServerPort);
@@ -395,11 +455,11 @@ public class ServerController extends Observable implements Observer {
 	
 	/**
 	 * Gets a supporting route.
-	 * @param serverIP
-	 * @param serverPort
-	 * @param id
-	 * @param position
-	 * @param status
+	 * @param serverIP Server ip.
+	 * @param serverPort Server port.
+	 * @param id Driver id.
+	 * @param position Driver position.
+	 * @param status Driver status.
 	 * @return Route.
 	 * @throws UnknownHostException Unknown host.
 	 * @throws IOException IOException Signals that an I/O exception of some sort has occurred.
@@ -431,9 +491,13 @@ public class ServerController extends Observable implements Observer {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			}
+			}	
+			this.helper = h;	
 			
-			this.helper = h;
+			this.lastMessage = "Helper selected: " + helper.getIp() + ":" + helper.getPort() +
+					   " - area id: " + helper.getArea() + " - trash cans quantity: " + helper.getTrashCansQuantity();
+			setChanged();
+			notifyObservers();
 		}		
 	}
 	
@@ -706,7 +770,9 @@ public class ServerController extends Observable implements Observer {
 			}
 		}
 		
-		/* Reset counters variables 
+		/* Code for generate unpriotirized dumps route:
+		 * 
+		 * Reset counters variables 
 		if(!restDumpstersList.isEmpty()) {
 			before = lastPrioritized;
 			closer =  restDumpstersList.get(0).getIdNumber();
@@ -736,7 +802,7 @@ public class ServerController extends Observable implements Observer {
 					closerIndex = 0;
 				}
 			}
-		}*/
+		} */
 		
 		return route;		
 	}

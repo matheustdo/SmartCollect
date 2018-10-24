@@ -107,7 +107,7 @@
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="routeRestLabel" layoutX="111.0" layoutY="56.0" prefHeight="105.0" prefWidth="179.0" textFill="#c60000" wrapText="true">
+                              <Label fx:id="routeRestLabel" layoutX="111.0" layoutY="9.0" prefHeight="152.0" prefWidth="179.0" textFill="#c60000" wrapText="true">
                                  <font>
                                     <Font name="System Bold" size="18.0" />
                                  </font>
