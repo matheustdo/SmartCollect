@@ -84,7 +84,6 @@ public class ServerController extends Observable implements Observer {
 		this.drivers = new HashMap<String, Driver>();
 		this.supporting = new HashMap<String, Helper>();
 		new HashMap<String, Helper>();
-		sos();
 	}
 	
 	/**
@@ -351,7 +350,9 @@ public class ServerController extends Observable implements Observer {
 									setChanged();
 									notifyObservers();
 									Thread.sleep(50);
-								}				
+								}
+								
+								sos();					
 								
 								stopHelping();
 								
@@ -460,23 +461,12 @@ public class ServerController extends Observable implements Observer {
 	 * Sends a help message
 	 * @throws IOException Signals that an I/O exception of some sort has occurred.
 	 */
-	public void sos() {
-		new Thread(new Runnable() { 
-			public void run() {  
-				while(!driverStatus) {
-					lastMessage = "Sending a help message with multicast";
-					setChanged();
-					notifyObservers();								
-					
-					try {
-						sendMulticastMessage(SCMProtocol.HELP + " " + areaId + " " + serverIp + " " + udpServerPort);
-						Thread.sleep(2000);
-					} catch (IOException | InterruptedException e) {
-						e.printStackTrace();
-					}	
-				}
-        	}
-        }).start();
+	public void sos() throws IOException {
+		this.lastMessage = "Sending a help message with multicast";
+		setChanged();
+		notifyObservers();								
+		
+		sendMulticastMessage(SCMProtocol.HELP + " " + areaId + " " + serverIp + " " + udpServerPort);	
 	}
 	
 	/**
