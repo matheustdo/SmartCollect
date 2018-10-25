@@ -1,0 +1,16 @@
+[24/10/2018] [23:58:54] [SERVER THREAD/INFO]: Loading properties
+[24/10/2018] [23:58:54] [SERVER THREAD/INFO]: Properties loaded
+[24/10/2018] [23:58:54] [SERVER THREAD/INFO]: Starting UDP server
+[24/10/2018] [23:58:54] [SERVER THREAD/INFO]: UDP server has initialized at 127.0.0.1:4065
+[24/10/2018] [23:58:54] [SERVER THREAD/INFO]: Starting TCP server
+[24/10/2018] [23:58:54] [SERVER THREAD/INFO]: TCP server has initialized at 127.0.0.1:4066
+[24/10/2018] [23:58:54] [SERVER THREAD/INFO]: Starting multicast receiver
+[24/10/2018] [23:58:54] [SERVER THREAD/INFO]: Multicasting initialized at 230.0.0.1:5000
+[24/10/2018] [23:58:58] [SERVER THREAD/INFO]: A driver was created at region id A
+[24/10/2018] [23:59:03] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [23:59:04] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [23:59:05] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [23:59:06] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [23:59:07] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [23:59:09] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [23:59:10] [SERVER THREAD/INFO]: Closing server

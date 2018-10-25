@@ -46,6 +46,7 @@ public class ServerController extends Observable implements Observer {
 				tcpServerPort,
 				multicastPort,
 				trashCansQuantity,
+				helpingCansQuantity,
 				transferStationsQuantity,
 				minimunTrashPercentage;
 	private String serverIp,
@@ -72,6 +73,7 @@ public class ServerController extends Observable implements Observer {
 		this.tcpServerPort = 4066;
 		this.multicastPort = 5000;
 		this.trashCansQuantity = 0;
+		this.helpingCansQuantity = 0;
 		this.transferStationsQuantity = 0;
 		this.minimunTrashPercentage = 80;
 		this.areaId = "A";
@@ -82,6 +84,7 @@ public class ServerController extends Observable implements Observer {
 		this.drivers = new HashMap<String, Driver>();
 		this.supporting = new HashMap<String, Helper>();
 		new HashMap<String, Helper>();
+		sos();
 	}
 	
 	/**
@@ -290,9 +293,10 @@ public class ServerController extends Observable implements Observer {
 						}
 						
 						selectBestHelper(h);
+						
 						try {
 							sendTcpMessage(SCMProtocol.INFO + " " + areaId + " " + serverIp + " " + 
-										   tcpServerPort, helper.getIp(), helper.getPort());
+										   tcpServerPort + " " + trashCansQuantity, helper.getIp(), helper.getPort());
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -321,7 +325,7 @@ public class ServerController extends Observable implements Observer {
 							
 							if(action == SCMProtocol.UPDATE) {
 								while(ss.hasMoreTokens()) {
-									route += ss.nextToken() + h.getArea() + " ";
+									route += ss.nextToken() + "." + h.getArea() + " ";
 								}
 							}
 						} catch (ClassNotFoundException | IOException e) {
@@ -347,19 +351,11 @@ public class ServerController extends Observable implements Observer {
 									setChanged();
 									notifyObservers();
 									Thread.sleep(50);
-								}
+								}				
 								
-								this.lastMessage = "Sending a help message with multicast";
-								setChanged();
-								notifyObservers();
+								stopHelping();
 								
-								sendMulticastMessage(SCMProtocol.HELP + " " + areaId + " " + serverIp + 
-													 " " + udpServerPort);						
-								
-								for(Helper h:getSupportingList()) {
-									sendTcpMessage(SCMProtocol.UPDATE + "", h.getIp(), h.getPort());
-								}
-								
+								helpingCansQuantity = 0;
 								supporting.clear();
 								driverStatus = false;
 							} catch (IOException | InterruptedException e) {
@@ -381,23 +377,28 @@ public class ServerController extends Observable implements Observer {
 						 }
 					}
 				} else if (action == SCMProtocol.INFO) {
-					// Enables server helping to received server info
+					// Enables server helping to received server
 					String area = st.nextToken();
 					String ip = st.nextToken();
 					int port = Integer.parseInt(st.nextToken());
+					int trash = Integer.parseInt(st.nextToken());
 					
-					this.lastMessage = "Initializing helping to " + ip + ":" + port + " - area id: " + area;
+					helpingCansQuantity += trash;
+					
+					this.lastMessage = "Initializing helping to " + ip + ":" + port + " - area id: " + area +
+									   " - trash cans quantity: " + trash;
 					setChanged();
 					notifyObservers();
 			
-					supporting.put(area, new Helper(area, 0, ip, port));
+					supporting.put(area, new Helper(area, trash, ip, port));
 				} else if(action == SCMProtocol.DELETE) {
 					// Stops helping to designated server
 					String area = st.nextToken();
 					Helper he = supporting.get(area);
 					
+					helpingCansQuantity -= he.getTrashCansQuantity();
 					this.lastMessage = "Stopping helping to " + he.getIp() + ":" + he.getPort() +
-							   		   " - area id: " + he.getArea();
+							   		   " - area id: " + he.getArea() + " - trash cans quantity: " + he.getTrashCansQuantity();
 					setChanged();
 					notifyObservers();
 					
@@ -442,14 +443,49 @@ public class ServerController extends Observable implements Observer {
 					setChanged();
 					notifyObservers();
 					
+					int cansQuantity = trashCansQuantity + helpingCansQuantity;
+					
 					try {
-						sendUdpMessage(SCMProtocol.INFO + " " + areaId + " " + trashCansQuantity + 
+						sendUdpMessage(SCMProtocol.INFO + " " + areaId + " " + cansQuantity + 
 									   " " + serverIp + " " + tcpServerPort, helpServerIp, helpUdpServerPort);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				}
 			}
+		}
+	}
+	
+	/**
+	 * Sends a help message
+	 * @throws IOException Signals that an I/O exception of some sort has occurred.
+	 */
+	public void sos() {
+		new Thread(new Runnable() { 
+			public void run() {  
+				while(!driverStatus) {
+					lastMessage = "Sending a help message with multicast";
+					setChanged();
+					notifyObservers();								
+					
+					try {
+						sendMulticastMessage(SCMProtocol.HELP + " " + areaId + " " + serverIp + " " + udpServerPort);
+						Thread.sleep(2000);
+					} catch (IOException | InterruptedException e) {
+						e.printStackTrace();
+					}	
+				}
+        	}
+        }).start();
+	}
+	
+	/**
+	 * Stop helping.
+	 * @throws IOException Signals that an I/O exception of some sort has occurred.
+	 */
+	public void stopHelping() throws IOException {
+		for(Helper h:getSupportingList()) {
+			sendTcpMessage(SCMProtocol.UPDATE + "", h.getIp(), h.getPort());
 		}
 	}
 	
@@ -484,7 +520,7 @@ public class ServerController extends Observable implements Observer {
 	 * @param h Helper to compare.
 	 */
 	private void selectBestHelper(Helper h) {
-		if(helper == null || helper.getTrashCansQuantity() > h.getTrashCansQuantity()) {
+		if(helper == null || helper.getTrashCansQuantity() >= h.getTrashCansQuantity()) {
 			if(helper != null) {
 				try {
 					sendTcpMessage(SCMProtocol.DELETE + " " + areaId, helper.getIp(), helper.getPort());
@@ -492,7 +528,7 @@ public class ServerController extends Observable implements Observer {
 					e.printStackTrace();
 				}
 			}	
-			this.helper = h;	
+			this.helper = h;
 			
 			this.lastMessage = "Helper selected: " + helper.getIp() + ":" + helper.getPort() +
 					   " - area id: " + helper.getArea() + " - trash cans quantity: " + helper.getTrashCansQuantity();
@@ -616,6 +652,14 @@ public class ServerController extends Observable implements Observer {
 		return trashCansQuantity;
 	}
 	
+	/**
+	 * Returns the quantity of trash cans on helping.
+	 * @return Trash cans on helping.
+	 */
+	public int getHelpingCansQuantity() {
+		return helpingCansQuantity;
+	}
+
 	/**
 	 * Returns the quantity of transfer stations.
 	 * @return Transfer stations quantity.

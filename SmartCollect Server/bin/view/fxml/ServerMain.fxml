@@ -22,32 +22,38 @@
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints maxHeight="207.0" minHeight="10.0" prefHeight="203.0" vgrow="NEVER" />
-                <RowConstraints maxHeight="295.0" minHeight="10.0" prefHeight="267.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="269.0" minHeight="10.0" prefHeight="258.0" vgrow="NEVER" />
+                <RowConstraints maxHeight="295.0" minHeight="10.0" prefHeight="212.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
                         <TitledPane animated="false" collapsible="false" layoutX="16.0" layoutY="18.0" prefHeight="169.0" prefWidth="231.0" text="Server Info" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
                            <content>
-                              <AnchorPane prefHeight="143.0" prefWidth="201.0">
+                              <AnchorPane prefHeight="203.0" prefWidth="271.0">
                                  <children>
                                     <Label layoutX="14.0" layoutY="47.0" text="Server IP:" />
-                                    <Label layoutX="14.0" layoutY="64.0" text="UDP Server Port:" />
-                                    <Label layoutX="14.0" layoutY="102.0" text="Trash cans:" />
-                                    <Label layoutX="14.0" layoutY="121.0" text="Transfer stations:" />
-                                    <Label layoutX="14.0" layoutY="139.0" text="Drivers: " />
+                                    <Label layoutX="14.0" layoutY="83.0" text="UDP Server Port:" />
+                                    <Label layoutX="14.0" layoutY="138.0" text="Trash cans:" />
+                                    <Label layoutX="14.0" layoutY="157.0" text="Transfer stations:" />
+                                    <Label layoutX="14.0" layoutY="175.0" text="Drivers: " />
                                     <Label fx:id="ipNumberLabel" layoutX="69.0" layoutY="47.0" text="0000" />
-                                    <Label fx:id="udpPortNumberLabel" layoutX="109.0" layoutY="64.0" text="0000" />
-                                    <Label fx:id="trashCansQuantityLabel" layoutX="78.0" layoutY="102.0" text="0000" />
-                                    <Label fx:id="transferStationsQuantityLabel" layoutX="110.0" layoutY="121.0" text="0000" />
-                                    <Label fx:id="driversQuantityLabel" layoutX="60.0" layoutY="139.0" text="0000" />
-                                    <Label layoutX="14.0" layoutY="83.0" text="TCP Server Port:" />
-                                    <Label fx:id="tcpPortNumberLabel" layoutX="107.0" layoutY="83.0" text="0000" />
-                                    <Label layoutX="13.0" layoutY="30.0" text="Mininum trash percentage:" />
-                                    <Label fx:id="minimumTextLabel" layoutX="164.0" layoutY="30.0" text="0000" />
+                                    <Label fx:id="udpPortNumberLabel" layoutX="109.0" layoutY="83.0" text="0000" />
+                                    <Label fx:id="trashCansQuantityLabel" layoutX="78.0" layoutY="138.0" text="0000" />
+                                    <Label fx:id="transferStationsQuantityLabel" layoutX="110.0" layoutY="157.0" text="0000" />
+                                    <Label fx:id="driversQuantityLabel" layoutX="60.0" layoutY="175.0" text="0000" />
+                                    <Label layoutX="14.0" layoutY="102.0" text="TCP Server Port:" />
+                                    <Label fx:id="tcpPortNumberLabel" layoutX="107.0" layoutY="102.0" text="0000" />
+                                    <Label layoutX="14.0" layoutY="30.0" text="Mininum trash percentage:" />
+                                    <Label fx:id="minimumTextLabel" layoutX="165.0" layoutY="30.0" text="0000" />
                                     <Label layoutX="14.0" layoutY="13.0" text="Area ID:" />
-                                    <Label fx:id="areaIdTextLabel" layoutX="65.0" layoutY="13.0" text="0000" />
+                                    <Label fx:id="areaIdTextLabel" layoutX="64.0" layoutY="13.0" text="0000" />
+                                    <Label layoutX="14.0" layoutY="194.0" text="Trash cans in help:" />
+                                    <Label fx:id="helpeningNumberLabel" layoutX="118.0" layoutY="194.0" text="0000" />
+                                    <Label layoutX="14.0" layoutY="65.0" text="Multicast IP:" />
+                                    <Label fx:id="multicastIpLabel" layoutX="85.0" layoutY="65.0" text="0000" />
+                                    <Label layoutX="14.0" layoutY="120.0" text="Multicast Port:" />
+                                    <Label fx:id="multicastPortLabel" layoutX="98.0" layoutY="120.0" text="0000" />
                                  </children>
                               </AnchorPane>
                            </content>

@@ -29,7 +29,7 @@ public class DriverController extends Observable implements Observer {
 		runnableTcpClient = new TCPClient(serverPort, serverIP, SCMProtocol.CREATE + "");
 		Thread threadClient =  new Thread(runnableTcpClient);		
 		threadClient.start();	
-		runnableTcpClient.addObserver(this);
+		runnableTcpClient.addObserver(this);		
 	}
 	
 	/**
@@ -64,14 +64,27 @@ public class DriverController extends Observable implements Observer {
 	 * @param obj Output object.
 	 */
 	public void setTcpOutObject(String obj) {
-		runnableTcpClient.setOutObj(SCMProtocol.PROCESS + " " + obj);
+		if(runnableTcpClient != null) {
+			runnableTcpClient.setOutObj(SCMProtocol.PROCESS + " " + id + " " + obj);
+		}
+	}
+	
+	/**
+	 * Forces the server to send a message.
+	 */
+	public void forceSending() {
+		try {
+			runnableTcpClient.send();
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
-	 * Gets ID.
-	 * @return ID.
+	 * Return if the driver has an id.
+	 * @return If the driver has id.
 	 */
-	public String getId() {
-		return id;
+	public boolean hasId() {
+		return id != null;
 	}	
 }

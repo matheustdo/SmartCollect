@@ -1,0 +1,39 @@
+[24/10/2018] [21:48:27] [SERVER THREAD/INFO]: Loading properties
+[24/10/2018] [21:48:27] [SERVER THREAD/INFO]: Properties loaded
+[24/10/2018] [21:48:27] [SERVER THREAD/INFO]: Starting UDP server
+[24/10/2018] [21:48:27] [SERVER THREAD/INFO]: UDP server has initialized at 127.0.0.1:4085
+[24/10/2018] [21:48:27] [SERVER THREAD/INFO]: Starting TCP server
+[24/10/2018] [21:48:27] [SERVER THREAD/INFO]: TCP server has initialized at 127.0.0.1:4086
+[24/10/2018] [21:48:27] [SERVER THREAD/INFO]: Starting multicast receiver
+[24/10/2018] [21:48:27] [SERVER THREAD/INFO]: Multicasting initialized at 230.0.0.1:5000
+[24/10/2018] [21:48:37] [SERVER THREAD/INFO]: A driver was created at region id C
+[24/10/2018] [21:48:40] [SERVER THREAD/INFO]: Sending information to give help to localhost:4075
+[24/10/2018] [21:48:40] [SERVER THREAD/INFO]: Initializing helping to localhost:4076 - area id: B - trash cans quantity: 4
+[24/10/2018] [21:48:40] [SERVER THREAD/INFO]: Initializing helping to localhost:4076 - area id: B - trash cans quantity: 4
+[24/10/2018] [21:48:41] [SERVER THREAD/INFO]: Initializing helping to localhost:4066 - area id: A - trash cans quantity: 4
+[24/10/2018] [21:49:00] [SERVER THREAD/INFO]: Stopping helping to localhost:4076 - area id: B - trash cans quantity: 4
+[24/10/2018] [21:49:01] [SERVER THREAD/INFO]: Stopping helping to localhost:4066 - area id: A - trash cans quantity: 4
+[24/10/2018] [21:49:04] [SERVER THREAD/INFO]: Sending information to give help to localhost:4065
+[24/10/2018] [21:49:07] [SERVER THREAD/INFO]: Sending information to give help to localhost:4075
+[24/10/2018] [21:49:07] [SERVER THREAD/INFO]: Sending information to give help to localhost:4065
+[24/10/2018] [21:49:07] [SERVER THREAD/INFO]: Initializing helping to localhost:4066 - area id: A - trash cans quantity: 4
+[24/10/2018] [21:49:08] [SERVER THREAD/INFO]: Sending information to give help to localhost:4075
+[24/10/2018] [21:49:08] [SERVER THREAD/INFO]: Initializing helping to localhost:4076 - area id: B - trash cans quantity: 4
+[24/10/2018] [21:49:32] [SERVER THREAD/INFO]: Stopping helping mode
+[24/10/2018] [21:49:32] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [21:49:33] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [21:49:34] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [21:49:35] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [21:49:36] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [21:49:37] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [21:49:38] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [21:49:39] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [21:49:40] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [21:49:41] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [21:49:43] [SERVER THREAD/INFO]: Sending information to give help to localhost:4075
+[24/10/2018] [21:49:43] [SERVER THREAD/INFO]: Initializing helping to localhost:4076 - area id: B - trash cans quantity: 4
+[24/10/2018] [21:49:43] [SERVER THREAD/INFO]: Sending information to give help to localhost:4065
+[24/10/2018] [21:49:43] [SERVER THREAD/INFO]: Initializing helping to localhost:4066 - area id: A - trash cans quantity: 4
+[24/10/2018] [21:50:08] [SERVER THREAD/INFO]: Stopping helping mode
+[24/10/2018] [21:50:08] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [21:50:13] [SERVER THREAD/INFO]: Closing server

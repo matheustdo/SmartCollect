@@ -6,7 +6,7 @@ import java.text.DecimalFormat;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
-	
+
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -90,6 +90,15 @@ public class ServerMainFxmlController implements Initializable, Observer {
     @FXML
     private TextArea logTextArea;
     
+    @FXML
+    private Label helpeningNumberLabel;
+
+    @FXML
+    private Label multicastIpLabel;
+
+    @FXML
+    private Label multicastPortLabel;
+    
     private final DecimalFormat decimalFormat = new DecimalFormat("0");
     private ServerController serverController = new ServerController();
     
@@ -128,8 +137,9 @@ public class ServerMainFxmlController implements Initializable, Observer {
 	 * Write on log an exit message.
 	 */
 	public void exit() {
-		logTextArea.appendText(Log.server("Closing server" + "\n"));
+		logTextArea.appendText(Log.server("Closing server" + "\n"));		
 		try {
+			serverController.stopHelping();
 			serverController.saveServerData();
 			serverController.saveServerLog(logTextArea.getText().replaceAll("\n", System.getProperty("line.separator")));
 		} catch (IOException e) {
@@ -170,6 +180,9 @@ public class ServerMainFxmlController implements Initializable, Observer {
                     		trashCansQuantityLabel.setText(Integer.toString(serverController.getTrashCansQuantity()));
                     		transferStationsQuantityLabel.setText(Integer.toString(serverController.getTransferStationsQuantity()));
                     		driversQuantityLabel.setText(Integer.toString(serverController.getDriversQuantity()));
+                    		multicastIpLabel.setText(serverController.getMulticastIp());
+                    		multicastPortLabel.setText(Integer.toString(serverController.getMulticastPort()));
+                    		helpeningNumberLabel.setText(Integer.toString(serverController.getHelpingCansQuantity()));
             		    }
             		});            		     		
             		try {

@@ -1,0 +1,23 @@
+[24/10/2018] [20:15:59] [SERVER THREAD/INFO]: Loading properties
+[24/10/2018] [20:15:59] [SERVER THREAD/INFO]: Properties loaded
+[24/10/2018] [20:15:59] [SERVER THREAD/INFO]: Starting UDP server
+[24/10/2018] [20:15:59] [SERVER THREAD/INFO]: UDP server has initialized at 127.0.0.1:4065
+[24/10/2018] [20:15:59] [SERVER THREAD/INFO]: Starting TCP server
+[24/10/2018] [20:15:59] [SERVER THREAD/INFO]: TCP server has initialized at 127.0.0.1:4066
+[24/10/2018] [20:15:59] [SERVER THREAD/INFO]: Starting multicast receiver
+[24/10/2018] [20:15:59] [SERVER THREAD/INFO]: Multicasting initialized at 230.0.0.1:5000
+[24/10/2018] [20:16:14] [SERVER THREAD/INFO]: A driver was created at region id A
+[24/10/2018] [20:16:16] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [20:16:16] [SERVER THREAD/INFO]: A helper info was received from localhost:4076 - area id: B - trash cans quantity: 4
+[24/10/2018] [20:16:16] [SERVER THREAD/INFO]: Helper selected: localhost:4076 - area id: B - trash cans quantity: 4
+[24/10/2018] [20:16:36] [SERVER THREAD/INFO]: The helper was incapacitated
+[24/10/2018] [20:16:36] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [20:16:36] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [20:16:37] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [20:16:38] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [20:16:39] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [20:16:40] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [20:16:41] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [20:16:42] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [20:16:44] [SERVER THREAD/INFO]: Sending a help message with multicast
+[24/10/2018] [20:16:52] [SERVER THREAD/INFO]: Closing server

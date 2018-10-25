@@ -58,15 +58,9 @@ public class DriverMainFxmlController implements Initializable, Observer {
     void turnOnButtonAction(ActionEvent event) throws InterruptedException, IOException {
     	position = Integer.parseInt(driverPosTextField.getText());
     	if(statusTextField.getText().equals("OFFLINE")) {
-	    	driverController.turnClientOn(Integer.parseInt(serverPortTextField.getText()), serverIpTextField.getText());
-	    	statusTextField.setText("ONLINE");
-	    	statusTextField.setTextFill(Color.DARKGREEN);
-	    	turnOnButton.setText("Update position");    	
-	    	serverIpTextField.setDisable(true);
-	    	serverPortTextField.setDisable(true);
+	    	driverController.turnClientOn(Integer.parseInt(serverPortTextField.getText()), serverIpTextField.getText());	    	
     	} else {
-    		driverController.setTcpOutObject(driverController.getId() + " " + 
-					 driverPosTextField.getText() + " " + !brokenChoicer.isSelected());
+    		driverController.setTcpOutObject(driverPosTextField.getText() + " " + !brokenChoicer.isSelected());
     	}
     	
     	    	
@@ -95,7 +89,7 @@ public class DriverMainFxmlController implements Initializable, Observer {
 	 */
 	@FXML
     void brokenOnAction(ActionEvent event) {
-		driverController.setTcpOutObject(driverController.getId() + " " + position + " " + !brokenChoicer.isSelected());    	
+		driverController.setTcpOutObject(position + " " + !brokenChoicer.isSelected());    	
     }
 
 	/**
@@ -107,10 +101,26 @@ public class DriverMainFxmlController implements Initializable, Observer {
 			Platform.runLater(new Runnable() {
     		    @Override
     		    public void run() {
-    		    	driverController.setTcpOutObject(driverController.getId() + " " + position + " " + !brokenChoicer.isSelected());
+    		    	statusTextField.setText("ONLINE");
+    		    	statusTextField.setTextFill(Color.DARKGREEN);
+    		    	turnOnButton.setText("Update position");    	
+    		    	serverIpTextField.setDisable(true);
+    		    	serverPortTextField.setDisable(true);
+    		    	driverController.setTcpOutObject(position + " " + !brokenChoicer.isSelected());
     		    	generateRoute();
     		    }
     		});
+		}		
+	}
+	
+	/**
+	 * Exits of application.
+	 * @throws InterruptedException 
+	 */
+	public void exit() {
+		if(driverController.hasId()) {
+			driverController.setTcpOutObject(driverPosTextField.getText() + " " + false);
+			driverController.forceSending();
 		}		
 	}
 }
